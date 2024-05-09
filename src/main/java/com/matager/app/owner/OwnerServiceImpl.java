@@ -4,10 +4,9 @@
 
 package com.matager.app.owner;
 
-import at.orderking.bossApp.common.config.db.sharding.DBContextHolder;
-import at.orderking.bossApp.owner.settings.OwnerSettingService;
-import at.orderking.bossApp.store.StoreRepository;
-import at.orderking.bossApp.user.UserRepository;
+import com.matager.app.owner.settings.OwnerSettingService;
+import com.matager.app.store.StoreRepository;
+import com.matager.app.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,6 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public Owner addNewOwner(NewOwnerModel newOwner) {
-        DBContextHolder.setCurrentDb(newOwner.getShardNum());
 
         Owner owner = new Owner();
         owner.setShardNum(newOwner.getShardNum());

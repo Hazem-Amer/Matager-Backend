@@ -4,7 +4,7 @@
 
 package com.matager.app.order;
 
-import at.orderking.bossApp.repository.projection.*;
+import com.matager.app.common.statistics.projection.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

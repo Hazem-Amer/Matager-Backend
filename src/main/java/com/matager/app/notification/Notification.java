@@ -4,9 +4,9 @@
 
 package com.matager.app.notification;
 
-import at.orderking.bossApp.common.domain.BaseEntity;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.user.User;
+import com.matager.app.common.domain.BaseEntity;
+import com.matager.app.owner.Owner;
+import com.matager.app.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

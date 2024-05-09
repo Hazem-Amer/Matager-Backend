@@ -4,7 +4,7 @@
 
 package com.matager.app.user;
 
-import at.orderking.bossApp.owner.Owner;
+import com.matager.app.owner.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

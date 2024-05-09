@@ -4,7 +4,7 @@
 
 package com.matager.app.reservation;
 
-import at.orderking.bossApp.repository.projection.StoreReservationPro;
+import com.matager.app.common.statistics.projection.StoreReservationPro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

@@ -4,9 +4,9 @@
 
 package com.matager.app.common.config.security;
 
-import at.orderking.bossApp.auth.security.AppUserDetailsService;
-import at.orderking.bossApp.common.config.RsaKeyProperties;
-import at.orderking.bossApp.token.TokenAuthenticationConverter;
+import com.matager.app.auth.security.AppUserDetailsService;
+import com.matager.app.common.config.RsaKeyProperties;
+import com.matager.app.token.TokenAuthenticationConverter;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -51,9 +51,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeRequests()
-                .regexMatchers("/v1/central/auth/signin").permitAll()
-                .regexMatchers("/v1/central/auth/create_user").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
-                .regexMatchers("/v1/owner").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
+                .requestMatchers("/v1/central/auth/signin").permitAll()
+                .requestMatchers("/v1/central/auth/create_user").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
+                .requestMatchers("/v1/owner").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
                 .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
                 .and()
                 .oauth2ResourceServer()

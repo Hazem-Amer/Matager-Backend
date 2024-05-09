@@ -1,14 +1,12 @@
 package com.matager.app.report;
 
-import at.orderking.bossApp.auth.AuthenticationFacade;
-import at.orderking.bossApp.common.helper.general.JsonUtils;
-import at.orderking.bossApp.common.helper.general.PosWebsocketCommand;
-import at.orderking.bossApp.common.helper.rest.RestHelper;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.owner.OwnerService;
-import at.orderking.bossApp.setting.SettingService;
-import at.orderking.bossApp.setting.Settings;
-import com.nimbusds.jose.shaded.json.JSONObject;
+import com.matager.app.auth.AuthenticationFacade;
+import com.matager.app.common.helper.general.JsonUtils;
+import com.matager.app.common.helper.rest.RestHelper;
+import com.matager.app.owner.Owner;
+import com.matager.app.owner.OwnerService;
+import com.matager.app.setting.SettingService;
+import com.matager.app.setting.Settings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,46 +81,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     public String getReportUrlFromPos(LocalDate fromDate, LocalDate toDate, Long storeId, Long reportId) {
-        RestTemplate restTemplate = new RestTemplateBuilder().build();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        String authHeader = restHelper.getBasicAuthHeader(username, password);
-        headers.add("Authorization", authHeader);
-
-        String sysId = settingService.getSettingValue(storeId, Settings.SYSTEM_ID.getPosKey());
-
-        String reportName = reportRepository.findById(reportId).orElseThrow(() -> new IllegalArgumentException("Report not found.")).getFullName().toString();
-
-        JSONObject body = new JSONObject(Map.of(
-                "apiuser", apiUser,
-                "apikey", apiKey,
-                "systemid", sysId,
-                "deviceid", "server",
-                "timeout", "30000",
-                "name", PosWebsocketCommand.GET_REPORT.getCommand(),
-                "type", reportName,
-                "from", fromDate.format(df),
-                "to", toDate.format(df)
-        ));
-
-        log.info("Request body: " + body.toJSONString());
-
-        HttpEntity<String> entity = new HttpEntity<>(body.toJSONString(), headers);
-
-        log.info("Sending request to: " + posWebsocketServerUrl + "/dashboard_api/call");
-        log.info("Request body: " + entity.toString());
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(posWebsocketServerUrl + "/dashboard_api/call", HttpMethod.POST, entity, String.class);
-            log.info(response.toString());
-            if (response.getStatusCode() == HttpStatus.OK) {
-                return JsonUtils.parseJsonAsJSONObject(Objects.requireNonNull(response.getBody())).getJSONObject("ws_response").getString("url");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error occurred while generating report." + e.getMessage());
-        }
 
         throw new RuntimeException("Error occurred while generating report.");
     }

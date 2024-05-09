@@ -1,9 +1,9 @@
 package com.matager.app.order.delivery;
 
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.store.Store;
-import at.orderking.bossApp.store.StoreRepository;
-import at.orderking.bossApp.user.User;
+import com.matager.app.owner.Owner;
+import com.matager.app.store.Store;
+import com.matager.app.store.StoreRepository;
+import com.matager.app.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

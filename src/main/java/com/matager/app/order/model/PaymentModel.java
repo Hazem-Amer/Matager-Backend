@@ -4,7 +4,7 @@
 
 package com.matager.app.order.model;
 
-import at.orderking.bossApp.payment.PaymentType;
+import com.matager.app.payment.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

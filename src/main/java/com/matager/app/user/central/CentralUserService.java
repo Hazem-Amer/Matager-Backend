@@ -4,9 +4,9 @@
 
 package com.matager.app.user.central;
 
-import at.orderking.bossApp.helper.req_model.user.NewUserModel;
-import at.orderking.bossApp.helper.req_model.user.SigninModel;
-import at.orderking.bossApp.user.User;
+import com.matager.app.user.User;
+import com.matager.app.user.model.NewUserModel;
+import com.matager.app.user.model.SigninModel;
 
 public interface CentralUserService {
     User signNewUser(NewUserModel newUser);

@@ -4,7 +4,7 @@
 
 package com.matager.app.auth.security;
 
-import at.orderking.bossApp.user.UserRepository;
+import com.matager.app.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

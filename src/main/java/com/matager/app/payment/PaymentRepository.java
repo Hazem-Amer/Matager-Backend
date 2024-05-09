@@ -4,8 +4,8 @@
 
 package com.matager.app.payment;
 
-import at.orderking.bossApp.repository.projection.PaymentDateCountAmountPro;
-import at.orderking.bossApp.repository.projection.PaymentTypeSalePro;
+import com.matager.app.common.statistics.projection.PaymentDateCountAmountPro;
+import com.matager.app.common.statistics.projection.PaymentTypeSalePro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

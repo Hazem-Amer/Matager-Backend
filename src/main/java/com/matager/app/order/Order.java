@@ -6,10 +6,16 @@ package com.matager.app.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.matager.app.common.domain.BaseEntity;
+import com.matager.app.order.delivery.DeliveryOrder;
+import com.matager.app.order.orderItem.OrderItem;
+import com.matager.app.owner.Owner;
+import com.matager.app.payment.Payment;
+import com.matager.app.store.Store;
+import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "order")
 @Getter

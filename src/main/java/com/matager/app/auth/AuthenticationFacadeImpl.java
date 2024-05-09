@@ -4,9 +4,9 @@
 
 package com.matager.app.auth;
 
-import at.orderking.bossApp.common.exception.auth.NoAuthUserFoundException;
-import at.orderking.bossApp.user.User;
-import at.orderking.bossApp.user.UserServiceCacheImpl;
+import com.matager.app.common.exception.auth.NoAuthUserFoundException;
+import com.matager.app.user.User;
+import com.matager.app.user.UserServiceCacheImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;

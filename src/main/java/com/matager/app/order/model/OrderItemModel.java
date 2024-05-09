@@ -4,7 +4,7 @@
 
 package com.matager.app.order.model;
 
-import at.orderking.bossApp.order.orderItem.ZeroPriceReason;
+import com.matager.app.order.orderItem.ZeroPriceReason;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

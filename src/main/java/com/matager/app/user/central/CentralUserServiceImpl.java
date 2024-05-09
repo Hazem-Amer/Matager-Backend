@@ -4,12 +4,14 @@
 
 package com.matager.app.user.central;
 
-import at.orderking.bossApp.common.config.db.sharding.DBContextHolder;
-import at.orderking.bossApp.helper.req_model.user.NewUserModel;
-import at.orderking.bossApp.helper.req_model.user.SigninModel;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.owner.OwnerRepository;
-import at.orderking.bossApp.store.StoreRepository;
+import com.matager.app.owner.Owner;
+import com.matager.app.user.User;
+import com.matager.app.owner.OwnerRepository;
+import com.matager.app.store.StoreRepository;
+import com.matager.app.user.UserRepository;
+import com.matager.app.user.UserRole;
+import com.matager.app.user.model.NewUserModel;
+import com.matager.app.user.model.SigninModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,8 +30,6 @@ public class CentralUserServiceImpl implements CentralUserService {
     public User signNewUser(NewUserModel newUser) {
 
         System.out.println("New User: " + newUser);
-        // Set shard id
-        DBContextHolder.setCurrentDb(newUser.getShardNum());
 
         Owner owner = ownerRepository.findByUuid(newUser.getOwnerUuid()).orElseThrow(() -> new IllegalStateException("Owner not found."));
 
@@ -66,8 +66,6 @@ public class CentralUserServiceImpl implements CentralUserService {
     // called from central
     @Override
     public User signinUser(SigninModel form) {
-        // Set shard id
-        DBContextHolder.setCurrentDb(form.getShardNum());
 
         User user = userRepository.findByEmail(form.getEmail()).orElseThrow(() -> new IllegalStateException("Email not found: " + form.getEmail()));
 

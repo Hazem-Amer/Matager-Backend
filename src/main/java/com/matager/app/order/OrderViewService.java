@@ -8,9 +8,8 @@
 
 package com.matager.app.order;
 
-import at.orderking.bossApp.common.helper.general.TimeUnit;
-import at.orderking.bossApp.repository.dto.general.*;
-import at.orderking.bossApp.store.Store;
+import com.matager.app.common.statistics.dto.general.*;
+import com.matager.app.store.Store;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,7 +37,6 @@ public interface OrderViewService {
 
     Integer getOrdersCount(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, Store store);
 
-    List<DateCountAmountDto> getOrdersSales(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, Long storeId);
 
     // Cancellations Totals
     Double getCancellationsAmount(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate);
@@ -47,9 +45,6 @@ public interface OrderViewService {
 
     Double getCancellationsAmount(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, Store store);
 
-    List<DateCountAmountDto> getCancellations(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit);
-
-    List<DateCountAmountDto> getCancellations(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, Long storeId);
 
     Integer getCancellationsCount(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate);
 
@@ -101,20 +96,6 @@ public interface OrderViewService {
     List<NameAmountDto> getSourcesSales(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, List<String> productGroups);
 
     List<NameAmountDto> getSourcesSales(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate);
-
-    List<DateAmountDto> getAverageBasketSize(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit);
-
-    List<DateNameAmountDto> getAverageBasketSize(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, List<Long> storeIds);
-
-    List<DateAmountDto> getDeliveryAverageBasketSize(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit);
-
-    List<DateAmountDto> getDeliveryAverageBasketSize(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, String district);
-
-    List<DateAmountDto> getStoresDailySales(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, List<Long> storeIds);
-
-    List<DateNameAmountDto> getStoresSalesMultiLine(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, List<Long> storeIds);
-
-    List<DateNameAmountDto> getStoresDiscounts(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, List<Long> storeIds);
 
     List<NameCountAmountDto> getSalesByUser(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, Long storeId);
 

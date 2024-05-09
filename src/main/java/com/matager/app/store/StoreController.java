@@ -4,8 +4,8 @@
 
 package com.matager.app.store;
 
-import at.orderking.bossApp.auth.AuthenticationFacade;
-import at.orderking.bossApp.common.helper.res_model.ResponseModel;
+import com.matager.app.auth.AuthenticationFacade;
+import com.matager.app.common.helper.res_model.ResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

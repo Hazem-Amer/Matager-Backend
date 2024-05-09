@@ -1,7 +1,7 @@
 package com.matager.app.owner.settings;
 
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.owner.OwnerRepository;
+import com.matager.app.owner.Owner;
+import com.matager.app.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

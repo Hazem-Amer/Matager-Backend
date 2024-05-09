@@ -1,9 +1,8 @@
 package com.matager.app.reservation;
 
-import at.orderking.bossApp.common.helper.general.DateHelper;
-import at.orderking.bossApp.common.helper.general.TimeUnit;
-import at.orderking.bossApp.common.query_helper.QueryHelperService;
-import at.orderking.bossApp.repository.dto.general.DateNameCountDto;
+import com.matager.app.common.helper.general.DateHelper;
+
+import com.matager.app.common.statistics.dto.general.DateNameCountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 public class ReservationViewServiceImpl implements ReservationViewService {
 
     private final ReservationRepository reservationRepository;
-    private final QueryHelperService queryHelperService;
+
 
 
     @Override
@@ -37,12 +36,6 @@ public class ReservationViewServiceImpl implements ReservationViewService {
     @Override
     public Integer getGuestsCount(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, Long storeId) {
         return reservationRepository.getReservationsCount(fromDate, toDate, ownerId, storeId);
-    }
-
-    @Override
-    public List<DateNameCountDto> getReservationsCount(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, List<Long> storeId) {
-        return reservationRepository.getReservationsCount(queryHelperService.getDayStartTime(), fromDate, toDate, storeId, ownerId, timeUnit.name()).stream()
-                .map(r -> new DateNameCountDto(DateHelper.getDateFromDateTime(r.getDate()), r.getName(), r.getTotalCount())).collect(Collectors.toList());
     }
 
 }

@@ -4,11 +4,11 @@
 
 package com.matager.app.order;
 
-import at.orderking.bossApp.order.model.OrderModel;
-import at.orderking.bossApp.order.model.SyncOrdersModel;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.store.Store;
-import at.orderking.bossApp.user.User;
+import com.matager.app.order.model.OrderModel;
+import com.matager.app.order.model.SyncOrdersModel;
+import com.matager.app.owner.Owner;
+import com.matager.app.store.Store;
+import com.matager.app.user.User;
 
 import java.util.List;
 

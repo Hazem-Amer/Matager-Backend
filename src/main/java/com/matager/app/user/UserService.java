@@ -1,7 +1,6 @@
 package com.matager.app.user;
 
-import at.orderking.bossApp.helper.req_model.user.NewUserModel;
-
+import com.matager.app.user.model.NewUserModel;
 import java.util.List;
 
 public interface UserService {

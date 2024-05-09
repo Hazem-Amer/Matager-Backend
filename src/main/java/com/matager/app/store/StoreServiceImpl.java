@@ -4,10 +4,10 @@
 
 package com.matager.app.store;
 
-import at.orderking.bossApp.auth.AuthenticationFacade;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.user.User;
-import at.orderking.bossApp.user.UserService;
+import com.matager.app.auth.AuthenticationFacade;
+import com.matager.app.owner.Owner;
+import com.matager.app.user.User;
+import com.matager.app.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

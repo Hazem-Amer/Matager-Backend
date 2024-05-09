@@ -4,13 +4,13 @@
 
 package com.matager.app.auth;
 
-import at.orderking.bossApp.common.helper.res_model.ResponseModel;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.store.Store;
-import at.orderking.bossApp.store.StoreService;
-import at.orderking.bossApp.token.TokenService;
-import at.orderking.bossApp.user.User;
-import at.orderking.bossApp.user.UserService;
+import com.matager.app.common.helper.res_model.ResponseModel;
+import com.matager.app.owner.Owner;
+import com.matager.app.store.Store;
+import com.matager.app.store.StoreService;
+import com.matager.app.token.TokenService;
+import com.matager.app.user.User;
+import com.matager.app.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;

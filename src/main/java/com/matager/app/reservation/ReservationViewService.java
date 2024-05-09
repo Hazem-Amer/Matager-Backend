@@ -1,7 +1,6 @@
 package com.matager.app.reservation;
 
-import at.orderking.bossApp.common.helper.general.TimeUnit;
-import at.orderking.bossApp.repository.dto.general.DateNameCountDto;
+import com.matager.app.common.statistics.dto.general.DateNameCountDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,5 +17,4 @@ public interface ReservationViewService {
 
     ////    List<StoreReservation> getReservationsCount(LocalDateTime fromDate, LocalDateTime toDate, Long ownerId);
 
-    List<DateNameCountDto> getReservationsCount(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, TimeUnit timeUnit, List<Long> storeId);
 }

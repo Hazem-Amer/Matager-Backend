@@ -1,12 +1,12 @@
 package com.matager.app.user;
 
-import at.orderking.bossApp.auth.AuthenticationFacade;
-import at.orderking.bossApp.common.helper.rest.RestHelper;
-import at.orderking.bossApp.helper.req_model.user.NewUserModel;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.owner.OwnerRepository;
-import at.orderking.bossApp.store.Store;
-import at.orderking.bossApp.store.StoreRepository;
+import com.matager.app.auth.AuthenticationFacade;
+import com.matager.app.common.helper.rest.RestHelper;
+import com.matager.app.owner.Owner;
+import com.matager.app.owner.OwnerRepository;
+import com.matager.app.store.Store;
+import com.matager.app.store.StoreRepository;
+import com.matager.app.user.model.NewUserModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

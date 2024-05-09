@@ -4,8 +4,8 @@
 
 package com.matager.app.token;
 
-import at.orderking.bossApp.user.User;
-import at.orderking.bossApp.user.UserService;
+import com.matager.app.user.User;
+import com.matager.app.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
