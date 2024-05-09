@@ -4,24 +4,20 @@
 
 package com.matager.app.store;
 
-import at.orderking.bossApp.Item.Item;
-import at.orderking.bossApp.common.domain.BaseEntity;
-import at.orderking.bossApp.domain.cashbook.Cashbook;
-import at.orderking.bossApp.employee.Employee;
-import at.orderking.bossApp.employee.log.EmployeeLog;
-import at.orderking.bossApp.order.Order;
-import at.orderking.bossApp.order.delivery.DeliveryCustomer;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.reservation.Reservation;
-import at.orderking.bossApp.setting.Setting;
-import at.orderking.bossApp.visit.Visit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.matager.app.Item.Item;
+import com.matager.app.common.domain.BaseEntity;
+import com.matager.app.order.Order;
+import com.matager.app.order.delivery.DeliveryCustomer;
+import com.matager.app.owner.Owner;
+import com.matager.app.reservation.Reservation;
+import com.matager.app.setting.Setting;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -60,14 +56,6 @@ public class Store extends BaseEntity {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Employee> employees;
-
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<EmployeeLog> employeeLogs;
-
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Item> items;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -78,17 +66,11 @@ public class Store extends BaseEntity {
     @JsonIgnore
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Visit> visits;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Reservation> reservations;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Cashbook> cashbookRecords;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

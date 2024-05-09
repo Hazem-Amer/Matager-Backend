@@ -4,19 +4,12 @@
 
 package com.matager.app.order;
 
-import at.orderking.bossApp.common.domain.BaseEntity;
-import at.orderking.bossApp.order.delivery.DeliveryOrder;
-import at.orderking.bossApp.order.orderItem.OrderItem;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.payment.Payment;
-import at.orderking.bossApp.store.Store;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity(name = "order")
 @Getter

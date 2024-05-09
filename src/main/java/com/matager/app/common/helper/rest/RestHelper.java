@@ -10,8 +10,7 @@ public class RestHelper {
 
     public String getBasicAuthHeader(String username, String password) {
         String auth = username + ":" + password;
-        byte[] encodedAuth = Base64.encodeBase64(
-                auth.getBytes(StandardCharsets.US_ASCII));
+        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.US_ASCII), false);
         return "Basic " + new String(encodedAuth);
     }
 }

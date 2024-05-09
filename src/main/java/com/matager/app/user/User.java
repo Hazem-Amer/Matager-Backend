@@ -4,18 +4,16 @@
 
 package com.matager.app.user;
 
-
-import at.orderking.bossApp.common.domain.BaseEntity;
-import at.orderking.bossApp.owner.Owner;
-import at.orderking.bossApp.store.Store;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.matager.app.common.domain.BaseEntity;
+import com.matager.app.owner.Owner;
+import com.matager.app.store.Store;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Entity
 @Getter

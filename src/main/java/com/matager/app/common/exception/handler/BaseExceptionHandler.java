@@ -4,7 +4,8 @@
 
 package com.matager.app.common.exception.handler;
 
-import at.orderking.bossApp.common.helper.res_model.ResponseModel;
+
+import com.matager.app.common.helper.res_model.ResponseModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

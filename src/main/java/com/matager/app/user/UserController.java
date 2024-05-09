@@ -4,18 +4,17 @@
 
 package com.matager.app.user;
 
-import at.orderking.bossApp.auth.AuthenticationFacade;
-import at.orderking.bossApp.common.helper.res_model.ResponseModel;
-import at.orderking.bossApp.helper.req_model.user.ChangeRoleModel;
-import at.orderking.bossApp.helper.req_model.user.NewUserModel;
+import com.matager.app.auth.AuthenticationFacade;
+import com.matager.app.common.helper.res_model.ResponseModel;
+import com.matager.app.user.model.ChangeRoleModel;
+import com.matager.app.user.model.NewUserModel;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Map;
 
