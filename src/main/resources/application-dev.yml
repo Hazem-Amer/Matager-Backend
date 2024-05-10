@@ -1,0 +1,17 @@
+spring:
+
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    #    root: debug
+    at.orderking.bossApp: debug
+    org.apache.tomcat: debug # added for tomcat as abdullah said
+#      type: trace
+#      SQL: DEBUG
+
+server:
+  port: 8888
+
+

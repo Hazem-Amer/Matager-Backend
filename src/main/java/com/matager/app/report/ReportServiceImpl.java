@@ -34,20 +34,7 @@ public class ReportServiceImpl implements ReportService {
     private final OwnerService ownerService;
     private final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Value("${pos-websocket-server.url}")
-    private String posWebsocketServerUrl;
 
-    @Value("${pos-websocket-server.username}")
-    private String username;
-
-    @Value("${pos-websocket-server.password}")
-    private String password;
-
-    @Value("${pos-websocket-server.api-user}")
-    private String apiUser;
-
-    @Value("${pos-websocket-server.api-key}")
-    private String apiKey;
 
     @Override
     public void initializeReports() {

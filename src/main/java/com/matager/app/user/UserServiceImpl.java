@@ -36,14 +36,6 @@ public class UserServiceImpl implements UserService {
     private final StoreRepository storeRepository;
     private final OwnerRepository ownerRepository;
 
-    @Value("${central.server-url}")
-    private String centralServerUrl;
-
-    @Value("${central.username}")
-    private String username;
-
-    @Value("${central.password}")
-    private String password;
 
     @Override
     public List<User> getAllUsers() {
@@ -72,19 +64,19 @@ public class UserServiceImpl implements UserService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add("user-agent", "Child server");
-        String authHeader = restHelper.getBasicAuthHeader(username, password);
-        headers.add("Authorization", authHeader);
+//        String authHeader = restHelper.getBasicAuthHeader(username, password);
+//        headers.add("Authorization", authHeader);
 
 
         newUser.setOwnerUuid(owner.getUuid());
         HttpEntity<NewUserModel> createUserEntity = new HttpEntity<>(newUser, headers);
 
-        log.info("Sending request to: " + centralServerUrl + "/v1/create_user");
+//        log.info("Sending request to: " + centralServerUrl + "/v1/create_user");
         log.info("Request body: " + createUserEntity.toString());
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(centralServerUrl + "/v1/create_user", HttpMethod.POST, createUserEntity, String.class);
-            log.info(response.toString());
+//            ResponseEntity<String> response = restTemplate.exchange(centralServerUrl + "/v1/create_user", HttpMethod.POST, createUserEntity, String.class);
+//            log.info(response.toString());
 
         } catch (RestClientException e) {
             throw new RuntimeException(e);

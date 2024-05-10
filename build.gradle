@@ -26,9 +26,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
 
     // Cache Dependencies
-    implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("javax.cache:cache-api")
-    implementation("org.ehcache:ehcache")
+//    implementation("org.springframework.boot:spring-boot-starter-cache")
+//    implementation("javax.cache:cache-api")
+//    implementation("org.ehcache:ehcache")
 
     // Tomact Dependencies
 //    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")

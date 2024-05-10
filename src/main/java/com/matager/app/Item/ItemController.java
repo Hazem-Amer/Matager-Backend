@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/item")
+@RequestMapping("/v1/product")
 @RequiredArgsConstructor
 public class ItemController {
 
