@@ -8,6 +8,7 @@ import com.matager.app.owner.settings.OwnerSettingService;
 import com.matager.app.store.StoreRepository;
 import com.matager.app.user.User;
 import com.matager.app.user.UserRepository;
+import com.matager.app.user.UserRole;
 import com.matager.app.user.UserService;
 import com.matager.app.user.model.NewUserModel;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,7 @@ public class OwnerServiceImpl implements OwnerService {
     public User addNewOwner(NewOwnerModel newOwner) {
 
         Owner owner = new Owner();
+        owner.setUuid(UUID.randomUUID().toString());
         owner.setName(newOwner.getName());
         owner.setEmail(newOwner.getEmail());
 
@@ -54,7 +57,7 @@ public class OwnerServiceImpl implements OwnerService {
 
         return userService.addNewUser(
                 NewUserModel.builder()
-                        .ownerUuid(owner.getUuid()).email(owner.getEmail())
+                        .ownerUuid(owner.getUuid()).role(UserRole.ADMIN).email(owner.getEmail())
                         .password(newOwner.getPassword()).defaultStoreUuid("").build());
     }
 

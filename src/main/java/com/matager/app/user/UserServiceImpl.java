@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -74,18 +75,18 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setOwner(owner);
-        user.setUuid(newUser.getUserUuid());
+        user.setUuid(UUID.randomUUID().toString());
         user.setName(newUser.getName());
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
-        if (newUser.getRole().equals(UserRole.SERVER_ADMIN)) {
-            throw new RuntimeException("Invalid user role.");
-        }
 
         if (newUser.getRole() == null) {
             user.setRole(UserRole.UNDEFINED);
         } else {
+            if (newUser.getRole().equals(UserRole.SERVER_ADMIN)) {
+                throw new RuntimeException("Invalid user role.");
+            }
             user.setRole(newUser.getRole());
         }
 
