@@ -28,9 +28,7 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
             throw new NoAuthUserFoundException();
         }
 
-        String uuid = subject.split("\\.")[0];
-
-        return userService.getUserByUuid(uuid);
+        return userService.getUserByUuid(subject);
     }
 
     @Override
@@ -40,6 +38,6 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
 
     @Override
     public String getUuid() {
-        return ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSubject().split("\\.")[0];
+        return ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSubject();
     }
 }

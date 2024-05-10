@@ -6,9 +6,13 @@ package com.matager.app.owner;
 
 import com.matager.app.owner.settings.OwnerSettingService;
 import com.matager.app.store.StoreRepository;
+import com.matager.app.user.User;
 import com.matager.app.user.UserRepository;
+import com.matager.app.user.UserService;
+import com.matager.app.user.model.NewUserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,7 +22,7 @@ public class OwnerServiceImpl implements OwnerService {
 
     private final OwnerSettingService ownerSettingService;
     private final OwnerRepository ownerRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final StoreRepository storeRepository;
 
     @Override
@@ -36,13 +40,11 @@ public class OwnerServiceImpl implements OwnerService {
         return ownerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Owner dose not exists."));
     }
 
+    @Transactional
     @Override
-    public Owner addNewOwner(NewOwnerModel newOwner) {
+    public User addNewOwner(NewOwnerModel newOwner) {
 
         Owner owner = new Owner();
-        owner.setShardNum(newOwner.getShardNum());
-        owner.setId(newOwner.getId());
-        owner.setUuid(newOwner.getOwnerUuid());
         owner.setName(newOwner.getName());
         owner.setEmail(newOwner.getEmail());
 
@@ -50,7 +52,10 @@ public class OwnerServiceImpl implements OwnerService {
 
         ownerSettingService.initOwnerSettings(savedOwner.getId());
 
-        return savedOwner;
+        return userService.addNewUser(
+                NewUserModel.builder()
+                        .ownerUuid(owner.getUuid()).email(owner.getEmail())
+                        .password(newOwner.getPassword()).defaultStoreUuid("").build());
     }
 
     // Not implemented yet, will be implemented in the future when we have a better understanding of the system

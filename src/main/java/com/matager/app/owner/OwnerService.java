@@ -4,6 +4,8 @@
 
 package com.matager.app.owner;
 
+import com.matager.app.user.User;
+
 import java.util.List;
 
 public interface OwnerService {
@@ -13,7 +15,7 @@ public interface OwnerService {
 
     Owner getOwnerById(Long id);
 
-    Owner addNewOwner(NewOwnerModel newOwner);
+    User addNewOwner(NewOwnerModel newOwner);
 
     void deleteOwner(Owner owner);
     boolean hasStore(Long ownerId, Long storeId);

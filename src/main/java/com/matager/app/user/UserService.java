@@ -1,6 +1,8 @@
 package com.matager.app.user;
 
 import com.matager.app.user.model.NewUserModel;
+import com.matager.app.user.model.SigninModel;
+
 import java.util.List;
 
 public interface UserService {
@@ -8,8 +10,9 @@ public interface UserService {
     List<User> getAllUsers();
 
     List<User> getUsersByOwner(Long ownerId);
+    User signinUser(SigninModel form);
 
-    void addNewUser(NewUserModel newUser);
+    User addNewUser(NewUserModel newUser);
 
     User getPOSUser(String storeUuid);
 

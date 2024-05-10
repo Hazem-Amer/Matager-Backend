@@ -1,60 +1,86 @@
-/*
- * @Abdullah Sallam
- */
-
 package com.matager.app.auth;
 
 import com.matager.app.common.helper.res_model.ResponseModel;
+import com.matager.app.owner.NewOwnerModel;
 import com.matager.app.owner.Owner;
-import com.matager.app.store.Store;
+import com.matager.app.owner.OwnerService;
 import com.matager.app.store.StoreService;
 import com.matager.app.token.TokenService;
 import com.matager.app.user.User;
 import com.matager.app.user.UserService;
+import com.matager.app.user.model.NewUserModel;
+import com.matager.app.user.model.SigninModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/v1/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class PortalAuthController {
 
     private final UserService userService;
-    private final TokenService tokenService;
+    private final OwnerService ownerService;
     private final AuthenticationFacade authenticationFacade;
     private final StoreService storeService;
+    private final TokenService tokenService;
 
-    @PreAuthorize("hasAnyRole('SERVER_ADMIN','ADMIN')")
-    @GetMapping("/pos/token")
-    public ResponseEntity<?> generatePOSToken(@RequestParam String storeUuid) {
+    @PostMapping("/login")
+    public ResponseEntity<?> signin(@RequestBody @Valid SigninModel form) {
+        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
+
+        try {
+            User user = userService.signinUser(form);
+            String token = tokenService.generateToken(user);
+            log.info("Logged In: " + user);
+            return ResponseEntity.ok(
+                    response
+                            .statusCode(HttpStatus.OK.value())
+                            .status(HttpStatus.OK)
+                            .message("User signed in successfully")
+                            .data(Map.of("token", token))
+                            .build());
+        } catch (Exception e) {
+            log.error("Error login User With Credentials: " + form + "reason: " + e.getMessage());
+            return ResponseEntity.badRequest().body(
+                    response
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
+                            .status(HttpStatus.BAD_REQUEST)
+                            .message("Error login user with entered creds.")
+                            .reason(e.getMessage())
+                            .build()
+            );
+        }
+    }
+
+    @PostMapping("/sign_up")
+    public ResponseEntity<?> createUser(@Valid @RequestBody NewOwnerModel newOwnerModel) {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder()
                 .timeStamp(LocalDateTime.now().toString());
 
-        User user = userService.getPOSUser(storeUuid);
-        Owner owner = user.getOwner();
 
-        String token = tokenService.generateEndlessToken(user, owner.getShardNum()); // Endless token for now
-
-        log.info("POS token generated: " + user.getName());
+        User user = ownerService.addNewOwner(newOwnerModel);
+        String token = tokenService.generateToken(user);
+        log.info("new user created: " + user.getEmail());
 
         return ResponseEntity.ok(
                 response
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
-                        .message("POS token generated successfully")
+                        .message("User created successfully.")
                         .data(Map.of("token", token))
                         .build());
 
     }
+
 
     @GetMapping("/@me")
     public ResponseEntity<?> getUserData() {
@@ -76,37 +102,12 @@ public class AuthController {
                                         "userStores", storeService.getStores(owner.getId()).stream().map(s -> Map.of("id", s.getId(), "name", s.getName(), "iconUrl", "")).toArray(),
                                         "currencyCode", "EGP", // TODO: change later
                                         "currencySymbol", "$", // TODO: change later
-                                        "token", tokenService.generateToken(user, owner.getShardNum(), jwt.getExpiresAt()))
+                                        "token", tokenService.generateToken(user, jwt.getExpiresAt()))
                         )
                         .build()
         );
     }
 
 
-    @PreAuthorize("hasRole('POS')")
-    @GetMapping("/pos/@me")
-    public ResponseEntity<?> getPosData() {
-        User user = authenticationFacade.getAuthenticatedUser();
-
-        Store store = user.getDefaultStore();
-        Owner owner = store.getOwner();
-
-        Map<String, Object> data = new HashMap<>();
-
-        data.put("ownerUuid", owner.getUuid());
-        data.put("ownerName", owner.getName());
-        data.put("storeUuid", store.getUuid());
-        data.put("storeName", store.getName());
-
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .timeStamp(LocalDateTime.now().toString())
-                        .statusCode(HttpStatus.OK.value())
-                        .status(HttpStatus.OK)
-                        .message("POS Data")
-                        .data(data)
-                        .build()
-        );
-    }
 
 }

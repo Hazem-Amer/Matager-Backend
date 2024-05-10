@@ -52,21 +52,16 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/v1/central/auth/signin").permitAll()
-                                .requestMatchers("/v1/central/auth/create_user").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
+                                .requestMatchers("/v1/auth/login").permitAll()
+                                .requestMatchers("/v1/auth/sign_up").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
                                 .requestMatchers("/v1/owner").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
                                 .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
-                )
-                .oauth2ResourceServer()
-                .jwt()
+                ).oauth2ResourceServer().jwt()
                 .decoder(jwtDecoder())
                 .jwtAuthenticationConverter(new TokenAuthenticationConverter())
                 .and().and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(appUserDetailsService)
-                .httpBasic()
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .and()
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .build();
     }

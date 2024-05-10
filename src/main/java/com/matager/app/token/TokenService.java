@@ -22,46 +22,45 @@ import java.time.temporal.ChronoUnit;
 public class TokenService {
     private final JwtEncoder encoder;
     private final JwtDecoder decoder;
-
     private final UserService userService;
 
-    public String generateToken(String uuid, int shardNum, String roles, Instant expiresAt) {
+    public String generateToken(String uuid, String roles, Instant expiresAt) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(expiresAt)
-                .subject(uuid + "." + shardNum)
+                .subject(uuid)
                 .claim("roles", roles)
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    public String generateEndlessToken(String uuid, int shardNum, String roles) {
+    public String generateEndlessToken(String uuid, String roles) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .subject(uuid + "." + shardNum)
+                .subject(uuid)
                 .claim("roles", roles)
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    public String generateEndlessToken(User user, int shardNum) {
-        return generateEndlessToken(user.getUuid(), shardNum, String.valueOf(user.getRole()));
+    public String generateEndlessToken(User user) {
+        return generateEndlessToken(user.getUuid(), String.valueOf(user.getRole()));
     }
 
-    public String generateToken(String uuid, int shardNum, String roles) {
-        return generateToken(uuid, shardNum, roles, Instant.now().plus(7, ChronoUnit.DAYS));
+    public String generateToken(String uuid, String roles) {
+        return generateToken(uuid, roles, Instant.now().plus(7, ChronoUnit.DAYS));
     }
 
-    public String generateToken(User user, int shardNum) {
-        return generateToken(user.getUuid(), shardNum, String.valueOf(user.getRole()));
+    public String generateToken(User user) {
+        return generateToken(user.getUuid(), String.valueOf(user.getRole()));
     }
 
-    public String generateToken(User user, int shardNum, Instant expiresAt) {
-        return generateToken(user.getUuid(), shardNum, String.valueOf(user.getRole()), expiresAt);
+    public String generateToken(User user, Instant expiresAt) {
+        return generateToken(user.getUuid(), String.valueOf(user.getRole()), expiresAt);
     }
 
     public Authentication getAuthentication(String token) {
@@ -70,15 +69,12 @@ public class TokenService {
     }
 
     public String getUUID(Jwt jwt) {
-        return jwt.getSubject().split("\\.")[0];
+        return jwt.getSubject();
     }
 
     public User getUser(Jwt jwt) {
         return userService.getUserByUuid(getUUID(jwt));
     }
 
-    public Integer getShardNum(Jwt jwt) {
-        return Integer.parseInt(jwt.getSubject().split("\\.")[1]);
-    }
 
 }

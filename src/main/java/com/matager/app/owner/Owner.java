@@ -5,6 +5,8 @@
 package com.matager.app.owner;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.matager.app.common.domain.BaseEntity;
 import com.matager.app.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,13 +20,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonIgnoreProperties({"id"})
 @Table(name = "owner")
-public class Owner implements Serializable {
-
-    @Id
-    @JsonIgnore
-    @Column(name = "id")
-    private Long id;
+public class Owner extends BaseEntity implements Serializable {
 
     @Column(name = "uuid")
     private String uuid;
@@ -43,11 +41,5 @@ public class Owner implements Serializable {
 
     // owner license details and more other properties to add later ...
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Owner that = (Owner) o;
-        return Objects.equals(id, that.id);
-    }
 
 }

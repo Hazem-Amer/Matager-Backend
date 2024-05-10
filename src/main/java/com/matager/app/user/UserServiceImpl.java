@@ -7,6 +7,7 @@ import com.matager.app.owner.OwnerRepository;
 import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
 import com.matager.app.user.model.NewUserModel;
+import com.matager.app.user.model.SigninModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,39 +49,53 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public User signinUser(SigninModel form) {
+
+        User user = userRepository.findByEmail(form.getEmail()).orElseThrow(() -> new IllegalStateException("Email not found: " + form.getEmail()));
+
+        if (passwordEncoder.matches(form.getPassword(), user.getPassword())) return user;
+
+        throw new IllegalStateException("Wrong Email or password.");
+    }
+
+
     // Just admin can create new user
     @Override
-    public void addNewUser(NewUserModel newUser) {
-        User signedUser = authenticationFacade.getAuthenticatedUser();
-        Owner owner = signedUser.getOwner();
+    public User addNewUser(NewUserModel newUser) {
 
-        // Check if user with same email exists
+        System.out.println("New User: " + newUser);
+
+        Owner owner = ownerRepository.findByUuid(newUser.getOwnerUuid()).orElseThrow(() -> new IllegalStateException("Owner not found."));
+
         if (userRepository.existsByEmail(newUser.getEmail())) {
-            throw new IllegalStateException("User with same email already exists.");
+            throw new IllegalStateException("Email already used.");
         }
 
-        RestTemplate restTemplate = new RestTemplateBuilder().build();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.add("user-agent", "Child server");
-//        String authHeader = restHelper.getBasicAuthHeader(username, password);
-//        headers.add("Authorization", authHeader);
+        User user = new User();
+        user.setOwner(owner);
+        user.setUuid(newUser.getUserUuid());
+        user.setName(newUser.getName());
+        user.setEmail(newUser.getEmail());
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
-
-        newUser.setOwnerUuid(owner.getUuid());
-        HttpEntity<NewUserModel> createUserEntity = new HttpEntity<>(newUser, headers);
-
-//        log.info("Sending request to: " + centralServerUrl + "/v1/create_user");
-        log.info("Request body: " + createUserEntity.toString());
-
-        try {
-//            ResponseEntity<String> response = restTemplate.exchange(centralServerUrl + "/v1/create_user", HttpMethod.POST, createUserEntity, String.class);
-//            log.info(response.toString());
-
-        } catch (RestClientException e) {
-            throw new RuntimeException(e);
+        if (newUser.getRole().equals(UserRole.SERVER_ADMIN)) {
+            throw new RuntimeException("Invalid user role.");
         }
+
+        if (newUser.getRole() == null) {
+            user.setRole(UserRole.UNDEFINED);
+        } else {
+            user.setRole(newUser.getRole());
+        }
+
+        if (newUser.getDefaultStoreUuid() != null) {
+            user.setDefaultStore(storeRepository.findByOwnerIdAndUuid(owner.getId(), newUser.getDefaultStoreUuid()).orElseThrow(() -> new IllegalStateException("Store not found.")));
+        }
+
+        user.setProfileImageUrl("Default Profile Image Url");
+
+        return userRepository.save(user);
 
     }
 

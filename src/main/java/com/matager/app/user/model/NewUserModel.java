@@ -23,8 +23,6 @@ import jakarta.validation.constraints.Pattern;
 @NoArgsConstructor
 public class NewUserModel {
 
-    @JsonIgnore
-    private int shardNum;
     private String userUuid;
     private String ownerUuid;
 

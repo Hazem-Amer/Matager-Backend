@@ -4,6 +4,7 @@
 
 package com.matager.app.owner;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,14 +20,16 @@ import jakarta.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewOwnerModel {
-
-    private int shardNum;
-
-    private Long id;
-    private String ownerUuid;
     @Email(message = "Email is Invalid.")
     private String email;
     @NotEmpty(message = "Name can not be empty.")
     private String name;
+
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$",
+            message = "The password must be 8 to 20 length and contains at least:"
+                    + "\n-1 Upper Case Character ~*!@#&(){}<>:;',?/^+=\n"
+                    + "\n-1 Numeric Value\n"
+                    + "\n-1 Special Character.")
+    private String password;
 
 }
