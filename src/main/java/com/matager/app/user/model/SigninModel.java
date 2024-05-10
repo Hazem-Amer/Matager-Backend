@@ -13,9 +13,6 @@ import jakarta.validation.constraints.NotBlank;
 @Data
 public class SigninModel {
 
-    @JsonIgnore
-    private int shardNum;
-
     @Email
     private String email;
     @NotBlank
