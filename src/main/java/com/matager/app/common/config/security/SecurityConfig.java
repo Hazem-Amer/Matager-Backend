@@ -50,12 +50,13 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeRequests()
-                .requestMatchers("/v1/central/auth/signin").permitAll()
-                .requestMatchers("/v1/central/auth/create_user").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
-                .requestMatchers("/v1/owner").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
-                .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
-                .and()
+                .authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers("/v1/central/auth/signin").permitAll()
+                                .requestMatchers("/v1/central/auth/create_user").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
+                                .requestMatchers("/v1/owner").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
+                                .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
+                )
                 .oauth2ResourceServer()
                 .jwt()
                 .decoder(jwtDecoder())
