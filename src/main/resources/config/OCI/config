@@ -1,0 +1,6 @@
+[DEFAULT]
+user=ocid1.user.oc1..aaaaaaaaa62z2mnzhxdjrydq3pw7y5g5sasabzundosv42itpmj34tsjtt4a
+fingerprint=91:f7:a5:b6:ec:d6:9e:ec:80:04:4a:fa:de:80:fd:e0
+tenancy=ocid1.tenancy.oc1..aaaaaaaa73xvpsifotsfxmt2mvogyl2jeog7fz5fg5zpapcuvfmyw6wbyita
+region=me-jeddah-1
+key_file=src/main/resources/config/OCI/private.pem
