@@ -102,17 +102,13 @@ public class ItemServiceImpl implements ItemService {
         item.setStore(store);
         item.setItemNo(newItem.getItemNo());
         item.setItemName(newItem.getName());
-        item.setIconUrl(newItem.getIconUrl()); // TODO: Upload icon to server and save url
-        item.setMinimumStockLevel(newItem.getMinimumStockLevel());
-        item.setAmount(newItem.getAmount());
         item.setSale(newItem.isSale());
         item.setListPrice(newItem.getListPrice());
-        item.setPurchasePrice(newItem.getPurchasePrice());
         item.setProductGroup(newItem.getProductGroup());
-        item.setCategory(newItem.getCategory());
-        item.setSubcategory(newItem.getSubcategory());
-        item.setUnit(newItem.getUnit());
-        item.setDefaultSupplier(newItem.getDefaultSupplier());
+//        item.setCategory(newItem.getCategory());
+//        item.setSubcategory(newItem.getSubcategory());
+
+
         item = itemRepository.save(item);
         itemRepository.flush();
 
@@ -126,17 +122,11 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findByStoreIdAndItemNo(store.getId(), itemModel.getItemNo()).orElseThrow(() -> new RuntimeException("Item not found."));
 
         if (itemModel.getName() != null) item.setItemName(itemModel.getName());
-        if (itemModel.getIconUrl() != null) item.setIconUrl(itemModel.getIconUrl());
-        if (itemModel.getMinimumStockLevel() != null) item.setMinimumStockLevel(itemModel.getMinimumStockLevel());
-        if (itemModel.getAmount() != null) item.setAmount(itemModel.getAmount());
         if (itemModel.isSale() != item.isSale()) item.setSale(itemModel.isSale());
         if (itemModel.getListPrice() != null) item.setListPrice(itemModel.getListPrice());
-        if (itemModel.getPurchasePrice() != null) item.setPurchasePrice(itemModel.getPurchasePrice());
         if (itemModel.getProductGroup() != null) item.setProductGroup(itemModel.getProductGroup());
-        if (itemModel.getCategory() != null) item.setCategory(itemModel.getCategory());
-        if (itemModel.getSubcategory() != null) item.setSubcategory(itemModel.getSubcategory());
-        if (itemModel.getUnit() != null) item.setUnit(itemModel.getUnit());
-        if (itemModel.getDefaultSupplier() != null) item.setDefaultSupplier(itemModel.getDefaultSupplier());
+//        if (itemModel.getCategory() != null) item.setCategory(itemModel.getCategory());
+//        if (itemModel.getSubcategory() != null) item.setSubcategory(itemModel.getSubcategory());
 
 
         item = itemRepository.save(item);

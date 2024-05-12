@@ -26,7 +26,5 @@ public class ItemModel {
     private String unit;
     private Double amount; // Stock level
     private boolean isSale;
-    private Double minimumStockLevel;
-    private String defaultSupplier;
 
 }

@@ -25,7 +25,6 @@ public class ItemController {
     @PostMapping("/sync")
     public ResponseEntity<ResponseModel> syncItems(@RequestBody @Valid SyncItemsModel itemsModel) {
         User user = authenticationFacade.getAuthenticatedUser();
-
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
                         .timeStamp(LocalDateTime.now().toString())
