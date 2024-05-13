@@ -10,9 +10,6 @@ spring:
     allow-bean-definition-overriding: true
 
   datasource:
-    url: jdbc:mysql://144.24.219.44:30022/matager?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
-    username: 'root'
-    password: 'boss-app-secret'
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

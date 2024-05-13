@@ -3,6 +3,11 @@ spring:
   jpa:
     show-sql: true
 
+  datasource:
+    url: jdbc:mysql://144.24.219.44:30022/matager?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: 'root'
+    password: 'boss-app-secret'
+
 logging:
   level:
     #    root: debug

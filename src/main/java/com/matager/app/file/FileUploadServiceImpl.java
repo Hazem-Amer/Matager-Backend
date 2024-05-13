@@ -32,6 +32,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                         .bucketName(bucketName)
                         .objectName(objectName)
                         .contentLength(file.getSize())
+                        .contentType(file.getContentType())
                         .putObjectBody(inputStream)
                         .build();
 
