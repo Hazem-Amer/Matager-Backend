@@ -2,7 +2,7 @@ version: "3.9"
 services:
 
   spring:
-    container_name: hemmah_backend
+    container_name: matager_backend
     build: .
     ports:
       - "5009:8080"
@@ -16,7 +16,7 @@ services:
         condition: service_healthy
 
   mysql:
-    container_name: hemmah_backend_mysql
+    container_name: matager_backend_mysql
     image: mysql:8
     ports:
       - "3009:3306"
