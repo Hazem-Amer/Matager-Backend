@@ -1,5 +1,6 @@
 package com.matager.app.common.config;
 
+import com.oracle.bmc.ClientConfiguration;
 import org.springframework.context.annotation.Configuration;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class ObjectStorageClientConfig {
                 new ConfigFileAuthenticationDetailsProvider(configFile);
 
         return ObjectStorageClient.builder()
+                .configuration(ClientConfiguration.builder().readTimeoutMillis(300000).build())
                 .build(provider);
     }
 

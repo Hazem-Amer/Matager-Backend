@@ -1,7 +1,7 @@
-package com.matager.app.category;
+package com.matager.app.subcategory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.matager.app.ItemImage.ItemImage;
+import com.matager.app.category.Category;
 import com.matager.app.common.domain.BaseEntity;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
@@ -17,8 +17,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"id", "owner", "store"})
-@Table(name = "category")
-public class Category extends BaseEntity {
+@Table(name = "sub_category")
+public class SubCategory extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private Owner owner;
@@ -27,17 +27,9 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
-
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "is_visible", nullable = false)
     private Boolean isVisible;
-
-    @Column(name = "image")
-    private String categoryImageUrl;
-
-    @Column(name = "icon")
-    private String categoryIconUrl;
-
 }

@@ -10,13 +10,13 @@ import com.matager.app.category.Category;
 import com.matager.app.common.domain.BaseEntity;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
+import com.matager.app.subcategory.SubCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,7 +25,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "owner", "store"})
+@JsonIgnoreProperties({"id", "owner", "store","itemImages"})
 @Table(name = "item",
         indexes = {
                 @Index(name = "idx_item_store_id", columnList = "store_id"),
@@ -42,24 +42,22 @@ public class Item extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "subcategory_id")
+    private SubCategory subcategory;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<ItemImage> itemImages;
+
     @Column(name = "item_no")
     private Long itemNo;
 
     @Column(name = "item_name")
     private String itemName;
-
-    @Column(name = "product_group")
-    private String productGroup;
-
-//    @Column(name = "category")
-//    @JoinColumn(name = "category_id")
-//    private Category category;
-//
-//    @Column(name = "subcategory")
-//    private String subcategory;
-
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemImage> images;//need to ask
 
     @Column(name = "maximum_order_quantity")
     private Integer maximumOrderQuantity;
@@ -68,7 +66,7 @@ public class Item extends BaseEntity {
     private Integer minimumOrderQuantity;
 
     @Column(name = "quantity")
-    private Integer quantity;
+    private Double quantity;
 
     @Column(name = "sku_number", length = 50)
     private String skuNumber;
@@ -76,13 +74,11 @@ public class Item extends BaseEntity {
     @Column(name = "weight")
     private Double weight;
 
-
     @Column(name = "list_price")
     private Double listPrice; // Selling price
 
     @Column(name = "cost_price")
     private Double costPrice;
-
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

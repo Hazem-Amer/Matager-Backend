@@ -1,4 +1,13 @@
 package com.matager.app.category;
 
-public interface CategoryRepository {
+import com.matager.app.Item.Item;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+
 }
