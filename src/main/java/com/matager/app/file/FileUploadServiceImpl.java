@@ -20,40 +20,46 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final ObjectStorageClientConfig objectStorageClientConfig;
 
     @Override
-    public String upload(String prefix, MultipartFile file) throws Exception {
+    public String upload(String prefix, MultipartFile file) {
         String objectName = prefix + file.getOriginalFilename();
-        InputStream inputStream = file.getInputStream();
-
-        PutObjectRequest putObjectRequest =
-                PutObjectRequest.builder()
-                        .namespaceName(namespaceName)
-                        .bucketName(bucketName)
-                        .objectName(objectName)
-//                        .contentType(file.getContentType())
-                        .contentLength(file.getSize())
-                        .contentType(file.getContentType())
-                        .putObjectBody(inputStream)
-                        .build();
-
 
         try {
+            InputStream inputStream = file.getInputStream();
+
+            PutObjectRequest putObjectRequest =
+                    PutObjectRequest.builder()
+                            .namespaceName(namespaceName)
+                            .bucketName(bucketName)
+                            .objectName(objectName)
+                            .contentType(file.getContentType())
+                            .contentLength(file.getSize())
+                            .contentType(file.getContentType())
+                            .putObjectBody(inputStream)
+                            .build();
+
             objectStorageClientConfig.getObjectStorage().putObject(putObjectRequest);
+            return accessUrl + objectName;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            // TODO: add logging here
         } finally {
-            objectStorageClientConfig.getObjectStorage().close();
+            try {
+                objectStorageClientConfig.getObjectStorage().close();
+            } catch (Exception e) {
+                // TODO: add logging here
+            }
         }
 
-        return accessUrl + objectName;
+        throw new RuntimeException("Unexpected error while uploading file");
+
     }
 
     @Override
     public String upload(MultipartFile file) throws Exception {
         return upload("", file);
     }
+
     @Override
-    public String upload(FileType fileType ,MultipartFile file) throws Exception {
-            return upload(fileType.getPrefix(),file);
+    public String upload(FileType fileType, MultipartFile file) {
+        return upload(fileType.getPrefix(), file);
     }
 }

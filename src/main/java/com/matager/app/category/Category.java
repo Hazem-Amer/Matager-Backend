@@ -40,9 +40,9 @@ public class Category extends BaseEntity {
     private Boolean isVisible;
 
     @Column(name = "image")
-    private String categoryImageUrl;
+    private String imageUrl;
 
     @Column(name = "icon")
-    private String categoryIconUrl;
+    private String iconUrl;
 
 }

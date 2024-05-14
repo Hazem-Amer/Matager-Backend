@@ -58,7 +58,8 @@ public class OwnerServiceImpl implements OwnerService {
         return userService.addNewUser(
                 NewUserModel.builder()
                         .ownerUuid(owner.getUuid()).role(UserRole.ADMIN)
-                        .email(owner.getEmail()).password(newOwner.getPassword()).build());
+                        .name(newOwner.getName()).email(owner.getEmail())
+                        .password(newOwner.getPassword()).build());
     }
 
     // Not implemented yet, will be implemented in the future when we have a better understanding of the system

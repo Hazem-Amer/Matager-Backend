@@ -24,143 +24,87 @@ import java.util.Map;
 public class CategoryController {
     private final AuthenticationFacade authenticationFacade;
     private final ItemService itemService;
-    private final CategoriesService categoriesService;
+    private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<ResponseModel> addCategory(@RequestPart MultipartFile imageFile,@RequestPart MultipartFile iconFile,  @RequestPart @Valid CategoriesModel newCategory) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This category has been added successfully")
-                            .data(Map.of("category", categoriesService.addCategory(owner, store, newCategory,imageFile,iconFile)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error adding this category" + newCategory.toString() + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error adding this category")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> addCategory(@RequestPart(required = false) MultipartFile image, @RequestPart(required = false) MultipartFile icon, @RequestPart("data") @Valid CategoryModel newCategory) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        Store store = user.getDefaultStore();
+        Owner owner = user.getOwner();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This category has been added successfully")
+                        .data(Map.of("category", categoryService.addCategory(owner, store, newCategory, image, icon)))
+                        .build());
+
     }
+
     @GetMapping("/{categoryId}")
-    public ResponseEntity<ResponseModel> getCategory(@PathVariable long categoryId) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This category has been retrieved successfully")
-                            .data(Map.of("category", categoriesService.getCategory(categoryId)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error retrieving this category"+categoryId  + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error retrieving this category")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> getCategory(@PathVariable Long categoryId) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This category has been retrieved successfully")
+                        .data(Map.of("category", categoryService.getCategory(categoryId)))
+                        .build()
+        );
     }
+
     @GetMapping
     public ResponseEntity<ResponseModel> getCategories(@RequestParam(value = "storeId", required = true) Long storeId) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("Categories have been retrieved  successfully")
-                            .data(Map.of("category", categoriesService.getCategories(storeId)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error retrieving categories" +"\n" + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error retrieving categories")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+        User user = authenticationFacade.getAuthenticatedUser();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Categories have been retrieved  successfully")
+                        .data(Map.of("category", categoryService.getCategories(storeId)))
+                        .build());
+
     }
 
     @PatchMapping("/{categoryId}")
-    public ResponseEntity<ResponseModel> updateCategory(@RequestPart MultipartFile newImageFile,@RequestPart MultipartFile newIconFile,@PathVariable long categoryId,@RequestPart @Valid CategoriesModel newCategory) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This item has been updated successfully")
-                            .data(Map.of("category", categoriesService.updateCategory(owner, store,newImageFile,newIconFile,categoryId, newCategory)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error updating this item" + newCategory.toString() + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error updating this item")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> updateCategory(@RequestPart(required = false) MultipartFile image, @RequestPart(required = false) MultipartFile icon, @PathVariable Long categoryId, @RequestPart("data") @Valid CategoryModel newCategory) {
+
+        User user = authenticationFacade.getAuthenticatedUser();
+        Store store = user.getDefaultStore();
+        Owner owner = user.getOwner();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This item has been updated successfully")
+                        .data(Map.of("category", categoryService.updateCategory(owner, store, image, icon, categoryId, newCategory)))
+                        .build());
+
     }
+
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<ResponseModel> deleteCategory(@PathVariable long categoryId) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            log.info("user:" + user);
-            categoriesService.deleteCategory(owner,store,categoryId);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This item has been deleted successfully")
-                            .build());
-        } catch (Exception e) {
-            log.error("Error deleting this item" + categoryId + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error deleting this item")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> deleteCategory(@PathVariable Long categoryId) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        Store store = user.getDefaultStore();
+        Owner owner = user.getOwner();
+        log.info("user:" + user);
+        categoryService.deleteCategory(owner, store, categoryId);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This item has been deleted successfully")
+                        .build());
+
     }
 }

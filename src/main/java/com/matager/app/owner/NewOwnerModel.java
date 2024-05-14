@@ -20,10 +20,10 @@ import jakarta.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewOwnerModel {
-    @Email(message = "Email is Invalid.")
-    private String email;
     @NotEmpty(message = "Name can not be empty.")
     private String name;
+    @Email(message = "Email is Invalid.")
+    private String email;
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$",
             message = "The password must be 8 to 20 length and contains at least:"

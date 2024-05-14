@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -39,14 +40,14 @@ public class StoreController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> addStore(@RequestBody @Validated NewStoreModel newStoreModel) {
+    public ResponseEntity<?> addStore(@RequestPart MultipartFile icon, @RequestPart @Validated NewStoreModel data) {
 
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("Store added successfully.")
-                        .data(Map.of("store", storeService.addStore(newStoreModel)))
+                        .data(Map.of("store", storeService.addStore(icon, data)))
                         .build());
     }
 

@@ -5,11 +5,14 @@
 package com.matager.app.store;
 
 import com.matager.app.auth.AuthenticationFacade;
+import com.matager.app.file.FileType;
+import com.matager.app.file.FileUploadService;
 import com.matager.app.owner.Owner;
 import com.matager.app.user.User;
 import com.matager.app.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +24,7 @@ public class StoreServiceImpl implements StoreService {
     private final AuthenticationFacade authenticationFacade;
     private final StoreRepository storeRepository;
     private final UserService userService;
+    private final FileUploadService fileUploadService;
 
     @Override
     public List<Store> getStores(Long ownerId) {
@@ -33,7 +37,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public Store addStore(NewStoreModel newStoreModel) {
+    public Store addStore(MultipartFile icon, NewStoreModel newStoreModel) {
         User signedUser = authenticationFacade.getAuthenticatedUser();
         Owner owner = signedUser.getOwner();
 
@@ -43,6 +47,7 @@ public class StoreServiceImpl implements StoreService {
         store.setName(newStoreModel.getName());
         store.setBrand(newStoreModel.getBrand());
         store.setAddress(newStoreModel.getAddress());
+        store.setIconUrl(fileUploadService.upload(FileType.STORE_ICON, icon));
 
         return storeRepository.save(store);
     }

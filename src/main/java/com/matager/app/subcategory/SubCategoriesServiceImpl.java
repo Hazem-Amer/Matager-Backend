@@ -28,29 +28,25 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
     }
 
     @Override
-    public SubCategory getSubCategory(Owner owner, User user, Store store, long subCategoryId) {
-        Optional<SubCategory> optionalSubCategory = subCategoryRepository.findById(subCategoryId);
-        if (optionalSubCategory.isPresent())
-            return optionalSubCategory.get();
-        else
-            throw new NotFoundException("SubCategory not found with ID: " + subCategoryId);
+    public SubCategory getSubCategory(Owner owner, User user, Store store, Long subCategoryId) {
+        return subCategoryRepository.findById(subCategoryId).orElseThrow(()-> new RuntimeException("SubCategory not found with ID: " + subCategoryId));
     }
 
     @Override
-    public SubCategory addSubCategory(Owner owner, User user, Store store, MultipartFile iconFile, SubCategoryModel newSubCategory) throws Exception{
+    public SubCategory addSubCategory(Owner owner, User user, Store store, MultipartFile iconFile, SubCategoryModel newSubCategory) {
         SubCategory subCategory = new SubCategory();
         subCategory.setOwner(owner);
         subCategory.setStore(store);
         subCategory.setName(newSubCategory.getName());
         subCategory.setIsVisible(newSubCategory.getIsVisible());
-        String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON,iconFile);
+        String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, iconFile);
         subCategory.setCategoryIconUrl(iconUrl);
         subCategoryRepository.saveAndFlush(subCategory);
         return subCategory;
     }
 
     @Override
-    public SubCategory updateSubCategory(Owner owner, Store store, long subCategoryId, MultipartFile newIconFile,SubCategoryModel newSubCategory) throws Exception{
+    public SubCategory updateSubCategory(Owner owner, Store store, Long subCategoryId, MultipartFile newIconFile, SubCategoryModel newSubCategory) {
         Optional<SubCategory> optionalSubCategory = subCategoryRepository.findById(subCategoryId);
         SubCategory subCategory;
         if (optionalSubCategory.isPresent()) {
@@ -63,8 +59,8 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
             if (newSubCategory.getIsVisible() != null) {
                 subCategory.setIsVisible(newSubCategory.getIsVisible());
             }
-            if (newIconFile != null){
-                String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON,newIconFile);
+            if (newIconFile != null) {
+                String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, newIconFile);
                 subCategory.setCategoryIconUrl(iconUrl);
             }
 
@@ -76,7 +72,7 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
     }
 
     @Override
-    public void deleteSubCategory(Owner owner, Store store, long subCategoryId) {
+    public void deleteSubCategory(Owner owner, Store store, Long subCategoryId) {
         subCategoryRepository.deleteById(subCategoryId);
         subCategoryRepository.flush();
     }

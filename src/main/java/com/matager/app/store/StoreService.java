@@ -4,6 +4,8 @@
 
 package com.matager.app.store;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public interface StoreService {
@@ -11,7 +13,7 @@ public interface StoreService {
 
     Store getStore(String uuid);
 
-    Store addStore(NewStoreModel newStoreModel);
+    Store addStore(MultipartFile icon, NewStoreModel newStoreModel);
 
     Store deleteStore(String uuid);
 

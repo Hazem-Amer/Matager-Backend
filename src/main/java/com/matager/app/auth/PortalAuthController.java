@@ -8,7 +8,6 @@ import com.matager.app.store.StoreService;
 import com.matager.app.token.TokenService;
 import com.matager.app.user.User;
 import com.matager.app.user.UserService;
-import com.matager.app.user.model.NewUserModel;
 import com.matager.app.user.model.SigninModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -88,26 +89,30 @@ public class PortalAuthController {
         Owner owner = user.getOwner();
         Jwt jwt = authenticationFacade.getJwt();
 
+        Map<String, Object> data = new HashMap<>();
+        data.put("userName", user.getName());
+        data.put("userEmail", user.getEmail());
+        data.put("userRole", user.getRole());
+        data.put("userDefaultStoreId", user.getDefaultStore() != null ? user.getDefaultStore().getId() : "No Default Store.");
+        data.put("userStores",
+                storeService.getStores(owner.getId()).stream()
+                        .map(s ->
+                                Map.of("id", s.getId(), "name", s.getName(), "iconUrl", "")).toArray());
+
+        data.put("currencyCode", "EGP"); // TODO: change later
+        data.put("currencySymbol", "$"); // TODO: change later
+        data.put("token", tokenService.generateToken(user, jwt.getExpiresAt()));
+
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .timeStamp(LocalDateTime.now().toString())
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .message("User Data")
-                        .data(
-                                Map.of("userName", user.getName(),
-                                        "userEmail", user.getEmail(),
-                                        "userRole", user.getRole(),
-                                        "userDefaultStoreId", user.getDefaultStore() != null ? user.getDefaultStore().getId() : "No Default Store.",
-                                        "userStores", storeService.getStores(owner.getId()).stream().map(s -> Map.of("id", s.getId(), "name", s.getName(), "iconUrl", "")).toArray(),
-                                        "currencyCode", "EGP", // TODO: change later
-                                        "currencySymbol", "$", // TODO: change later
-                                        "token", tokenService.generateToken(user, jwt.getExpiresAt()))
-                        )
+                        .data(data)
                         .build()
         );
     }
-
 
 
 }

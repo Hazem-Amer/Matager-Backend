@@ -13,11 +13,12 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoriesModel {
-    private long categoryId;
+public class CategoryModel {
+    private Long storeId;
+    private Long categoryId;
     private String name;
     private Boolean isVisible;
-    private String categoryImageUrl;
-    private String categoryIconUrl;
+    private String imageUrl;
+    private String iconUrl;
     private List<Long> subCategoryIds;
 }

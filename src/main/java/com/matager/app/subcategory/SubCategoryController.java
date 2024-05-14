@@ -1,7 +1,6 @@
 package com.matager.app.subcategory;
 
 import com.matager.app.auth.AuthenticationFacade;
-import com.matager.app.category.CategoriesModel;
 import com.matager.app.common.helper.res_model.ResponseModel;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
@@ -26,142 +25,83 @@ public class SubCategoryController {
     private final SubCategoriesService subCategoryService;
 
     @PostMapping
-    public ResponseEntity<ResponseModel> addSubCategory(@RequestPart MultipartFile iconFile,@RequestPart @Valid SubCategoryModel subCategoryModel) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This sub_category has been added successfully")
-                            .data(Map.of("sub_category", subCategoryService.addSubCategory(owner,user, store, iconFile,subCategoryModel)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error adding this sub_category" + subCategoryModel.toString() + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error adding this sub_category")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> addSubCategory(@RequestPart(required = false) MultipartFile icon, @RequestPart("data") @Valid SubCategoryModel subCategoryModel) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        Store store = user.getDefaultStore();
+        Owner owner = user.getOwner();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This sub_category has been added successfully")
+                        .data(Map.of("sub_category", subCategoryService.addSubCategory(owner, user, store, icon, subCategoryModel)))
+                        .build());
     }
+
     @GetMapping("/{subCategoryId}")
-    public ResponseEntity<ResponseModel> getSubCategory(@PathVariable long subCategoryId) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This sub_category has been retrieved successfully")
-                            .data(Map.of("sub_category", subCategoryService.getSubCategory(owner, user,store, subCategoryId)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error retrieving this sub_category"+subCategoryId  + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error retrieving this sub_category")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> getSubCategory(@PathVariable Long subCategoryId) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        Store store = user.getDefaultStore();
+        Owner owner = user.getOwner();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This sub_category has been retrieved successfully")
+                        .data(Map.of("sub_category", subCategoryService.getSubCategory(owner, user, store, subCategoryId)))
+                        .build());
     }
+
     @GetMapping
     public ResponseEntity<ResponseModel> getSubCategories(@RequestParam(value = "storeId", required = true) Long storeId) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("sub_categories have been retrieved  successfully")
-                            .data(Map.of("sub_categories", subCategoryService.getSubCategories(storeId)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error retrieving categories" +"\n" + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error retrieving categories")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+
+        User user = authenticationFacade.getAuthenticatedUser();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("sub_categories have been retrieved  successfully")
+                        .data(Map.of("sub_categories", subCategoryService.getSubCategories(storeId)))
+                        .build());
     }
 
     @PatchMapping("/{subCategoryId}")
-    public ResponseEntity<ResponseModel> updateSubCategory(@PathVariable long subCategoryId,@RequestPart MultipartFile newIconFile,@RequestPart @Valid SubCategoryModel newSubCategory) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            log.info("user:" + user);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This sub_category has been updated successfully")
-                            .data(Map.of("sub_category", subCategoryService.updateSubCategory(owner, store,subCategoryId, newIconFile,newSubCategory)))
-                            .build());
-        } catch (Exception e) {
-            log.error("Error updating this sub_category" + newSubCategory.toString() + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error updating this sub_category")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> updateSubCategory(@PathVariable Long subCategoryId, @RequestPart(required = false) MultipartFile icon, @RequestPart("data") @Valid SubCategoryModel newSubCategory) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        Store store = user.getDefaultStore();
+        Owner owner = user.getOwner();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This sub_category has been updated successfully")
+                        .data(Map.of("sub_category", subCategoryService.updateSubCategory(owner, store, subCategoryId, icon, newSubCategory)))
+                        .build());
+
     }
+
     @DeleteMapping("/{subCategoryId}")
-    public ResponseEntity<ResponseModel> deleteCategory(@PathVariable long subCategoryId) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            log.info("user:" + user);
-            subCategoryService.deleteSubCategory(owner,store,subCategoryId);
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("This sub_category has been deleted successfully")
-                            .build());
-        } catch (Exception e) {
-            log.error("Error deleting this sub_category" + subCategoryId + "reason: " + e.getMessage());
-            return ResponseEntity.badRequest().body(
-                    response
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .message("Error deleting this sub_category")
-                            .reason(e.getMessage())
-                            .build()
-            );
-        }
+    public ResponseEntity<ResponseModel> deleteCategory(@PathVariable Long subCategoryId) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        Store store = user.getDefaultStore();
+        Owner owner = user.getOwner();
+
+        subCategoryService.deleteSubCategory(owner, store, subCategoryId);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This sub_category has been deleted successfully")
+                        .build());
+
     }
 }
