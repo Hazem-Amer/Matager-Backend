@@ -59,8 +59,6 @@ public class CategoryController {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
         try {
             User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
             log.info("user:" + user);
             return ResponseEntity.ok().body(
                     ResponseModel.builder()
@@ -68,7 +66,7 @@ public class CategoryController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("This category has been retrieved successfully")
-                            .data(Map.of("category", categoriesService.getCategory(owner, user,store, categoryId)))
+                            .data(Map.of("category", categoriesService.getCategory(categoryId)))
                             .build());
         } catch (Exception e) {
             log.error("Error retrieving this category"+categoryId  + "reason: " + e.getMessage());
@@ -83,12 +81,10 @@ public class CategoryController {
         }
     }
     @GetMapping
-    public ResponseEntity<ResponseModel> getCategories() {
+    public ResponseEntity<ResponseModel> getCategories(@RequestParam(value = "storeId", required = true) Long storeId) {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
         try {
             User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
             log.info("user:" + user);
             return ResponseEntity.ok().body(
                     ResponseModel.builder()
@@ -96,7 +92,7 @@ public class CategoryController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("Categories have been retrieved  successfully")
-                            .data(Map.of("category", categoriesService.getCategories(owner, user,store)))
+                            .data(Map.of("category", categoriesService.getCategories(storeId)))
                             .build());
         } catch (Exception e) {
             log.error("Error retrieving categories" +"\n" + "reason: " + e.getMessage());

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Data
 @Validated
 @SuperBuilder
@@ -17,4 +19,5 @@ public class CategoriesModel {
     private Boolean isVisible;
     private String categoryImageUrl;
     private String categoryIconUrl;
+    private List<Long> subCategoryIds;
 }

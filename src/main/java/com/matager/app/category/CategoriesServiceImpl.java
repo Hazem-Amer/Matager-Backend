@@ -1,20 +1,21 @@
 package com.matager.app.category;
 
-import com.matager.app.ItemImage.ItemImageRepository;
-import com.matager.app.file.FileType;
 import com.matager.app.file.FileUploadService;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
-import com.matager.app.store.StoreRepository;
 import com.matager.app.subcategory.SubCategory;
+import com.matager.app.subcategory.SubCategoryModel;
+import com.matager.app.subcategory.SubCategoryRepository;
 import com.matager.app.user.User;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.matager.app.file.FileType.CATEGORY_ICON;
 import static com.matager.app.file.FileType.CATEGORY_PHOTO;
@@ -24,47 +25,52 @@ import static com.matager.app.file.FileType.CATEGORY_PHOTO;
 public class CategoriesServiceImpl implements CategoriesService {
     private final CategoryRepository categoryRepository;
     private final FileUploadService fileUploadService;
-
+    private final SubCategoryRepository subCategoryRepository;
 
     @Override
-    public List<Category> getCategories(Owner owner, User user, Store store) {
-        return categoryRepository.findAll();
+    public List<Category> getCategories(Long storeId) {
+        return categoryRepository.findAllCategoryByStoreId(storeId);
     }
 
     @Override
-    public Category getCategory(Owner owner, User user, Store store, long categoryId) {
+    public CategoriesModel getCategory(Long categoryId) {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
-        if (optionalCategory.isPresent())
-            return optionalCategory.get();
+        if (optionalCategory.isPresent()) {
+            Category category = optionalCategory.get();
+            List<Long> subcategoryIds = category.getSubCategories().stream()
+                    .map(SubCategory::getId)
+                    .collect(Collectors.toList());
+            return new CategoriesModel(categoryId,category.getName(),category.getIsVisible(),category.getCategoryImageUrl(), category.getCategoryIconUrl(), subcategoryIds);
+        }
         else
             throw new NotFoundException("Category not found with ID: " + categoryId);
     }
 
-    @Override
-    public Category addCategory(Owner owner, User user, Store store, CategoriesModel newCategory) {
-        Category category = new Category();
-        category.setOwner(owner);
-        category.setStore(store);
-        category.setName(newCategory.getName());
-        category.setIsVisible(newCategory.getIsVisible());
-        category = categoryRepository.saveAndFlush(category);
-        return category;
-    }
 
-    @Override
-    public Category addCategory(Owner owner, Store store, CategoriesModel newCategory, MultipartFile imageFile, MultipartFile iconFile) throws Exception {
-        Category category = new Category();
-        category.setOwner(owner);
-        category.setStore(store);
-        category.setName(newCategory.getName());
-        category.setIsVisible(newCategory.getIsVisible());
-        String imageUrl = fileUploadService.upload(CATEGORY_PHOTO, imageFile);
-        category.setCategoryImageUrl(imageUrl);
-        String iconUrl = fileUploadService.upload(CATEGORY_ICON, iconFile);
-        category.setCategoryIconUrl(iconUrl);
-        category = categoryRepository.save(category);
-        return category;
+@Override
+public Category addCategory(Owner owner, Store store, CategoriesModel newCategory, MultipartFile imageFile, MultipartFile iconFile) throws Exception {
+    Category category = new Category();
+    category.setOwner(owner);
+    category.setStore(store);
+    category.setName(newCategory.getName());
+    category.setIsVisible(newCategory.getIsVisible());
+    String imageUrl = fileUploadService.upload(CATEGORY_PHOTO, imageFile);
+    category.setCategoryImageUrl(imageUrl);
+    String iconUrl = fileUploadService.upload(CATEGORY_ICON, iconFile);
+    category.setCategoryIconUrl(iconUrl);
+    category = categoryRepository.save(category);
+
+    List<SubCategory> subCategories = new ArrayList<>();
+    if (newCategory.getSubCategoryIds() != null && !newCategory.getSubCategoryIds().isEmpty()) {
+        subCategories = newCategory.getSubCategoryIds().stream()
+                .map(id -> subCategoryRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("SubCategory not found")))
+                .collect(Collectors.toList());
     }
+    category.setSubCategories(subCategories);
+
+    return categoryRepository.saveAndFlush(category);
+}
 
     @Override
     public Category updateCategory(Owner owner, Store store, MultipartFile imageFile, MultipartFile iconFile, Long categoryId, CategoriesModel newCategory) throws Exception {
@@ -88,6 +94,13 @@ public class CategoriesServiceImpl implements CategoriesService {
             if (iconFile != null) {
                 String iconUrl = fileUploadService.upload(CATEGORY_ICON, iconFile);
                 category.setCategoryIconUrl(iconUrl);
+            }
+            if(newCategory.getSubCategoryIds()!=null) {
+                List<SubCategory> subCategories = newCategory.getSubCategoryIds().stream()
+                        .map(id -> subCategoryRepository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("SubCategory not found")))
+                        .collect(Collectors.toList());
+                category.setSubCategories(subCategories);
             }
 
             categoryRepository.saveAndFlush(category);

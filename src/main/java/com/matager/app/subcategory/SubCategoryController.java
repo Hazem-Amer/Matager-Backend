@@ -26,7 +26,7 @@ public class SubCategoryController {
     private final SubCategoriesService subCategoryService;
 
     @PostMapping
-    public ResponseEntity<ResponseModel> addSubCategory(@RequestBody @Valid SubCategoryModel newSubCategoryModel) {
+    public ResponseEntity<ResponseModel> addSubCategory(@RequestPart MultipartFile iconFile,@RequestPart @Valid SubCategoryModel subCategoryModel) {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
         try {
             User user = authenticationFacade.getAuthenticatedUser();
@@ -39,10 +39,10 @@ public class SubCategoryController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("This sub_category has been added successfully")
-                            .data(Map.of("sub_category", subCategoryService.addSubCategory(owner,user, store, newSubCategoryModel)))
+                            .data(Map.of("sub_category", subCategoryService.addSubCategory(owner,user, store, iconFile,subCategoryModel)))
                             .build());
         } catch (Exception e) {
-            log.error("Error adding this sub_category" + newSubCategoryModel.toString() + "reason: " + e.getMessage());
+            log.error("Error adding this sub_category" + subCategoryModel.toString() + "reason: " + e.getMessage());
             return ResponseEntity.badRequest().body(
                     response
                             .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -82,12 +82,10 @@ public class SubCategoryController {
         }
     }
     @GetMapping
-    public ResponseEntity<ResponseModel> getSubCategories() {
+    public ResponseEntity<ResponseModel> getSubCategories(@RequestParam(value = "storeId", required = true) Long storeId) {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
         try {
             User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
             log.info("user:" + user);
             return ResponseEntity.ok().body(
                     ResponseModel.builder()
@@ -95,7 +93,7 @@ public class SubCategoryController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("sub_categories have been retrieved  successfully")
-                            .data(Map.of("sub_categories", subCategoryService.getSubCategories(owner, user,store)))
+                            .data(Map.of("sub_categories", subCategoryService.getSubCategories(storeId)))
                             .build());
         } catch (Exception e) {
             log.error("Error retrieving categories" +"\n" + "reason: " + e.getMessage());
@@ -111,7 +109,7 @@ public class SubCategoryController {
     }
 
     @PatchMapping("/{subCategoryId}")
-    public ResponseEntity<ResponseModel> updateSubCategory(@PathVariable long subCategoryId,@RequestBody @Valid SubCategoryModel newSubCategory) {
+    public ResponseEntity<ResponseModel> updateSubCategory(@PathVariable long subCategoryId,@RequestPart MultipartFile newIconFile,@RequestPart @Valid SubCategoryModel newSubCategory) {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
         try {
             User user = authenticationFacade.getAuthenticatedUser();
@@ -124,7 +122,7 @@ public class SubCategoryController {
                             .status(HttpStatus.OK)
                             .statusCode(HttpStatus.OK.value())
                             .message("This sub_category has been updated successfully")
-                            .data(Map.of("sub_category", subCategoryService.updateSubCategory(owner, store,subCategoryId, newSubCategory)))
+                            .data(Map.of("sub_category", subCategoryService.updateSubCategory(owner, store,subCategoryId, newIconFile,newSubCategory)))
                             .build());
         } catch (Exception e) {
             log.error("Error updating this sub_category" + newSubCategory.toString() + "reason: " + e.getMessage());

@@ -15,4 +15,5 @@ public class SubCategoryModel {
     private long subCategoryId;
     private String name;
     private Boolean isVisible;
+    private String subCategoryIconUrl;
 }

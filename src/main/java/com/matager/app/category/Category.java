@@ -5,18 +5,21 @@ import com.matager.app.ItemImage.ItemImage;
 import com.matager.app.common.domain.BaseEntity;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
+import com.matager.app.subcategory.SubCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "owner", "store"})
+@JsonIgnoreProperties({"owner", "store"})
 @Table(name = "category")
 public class Category extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,6 +30,8 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<SubCategory> subCategories;
 
     @Column(name = "name", nullable = false)
     private String name;
