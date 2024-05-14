@@ -147,18 +147,18 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     List<NameAmountPro> findProductGroupsSales(LocalDateTime fromDate, LocalDateTime toDate, List<String> productGroups, Long ownerId);
 
 
-    @Query(value = "SELECT oi.item.category as name, SUM(oi.price * oi.count) as totalAmount " +
-            "FROM OrderItem oi " +
-            "WHERE oi.item.category IN :categories AND oi.order.createdAt BETWEEN :fromDate AND :toDate AND oi.owner.id = :ownerId AND oi.order.isCancelled = false " +
-            "GROUP BY oi.item.category")
-    List<NameAmountPro> findCategoriesSales(LocalDateTime fromDate, LocalDateTime toDate, List<String> categories, Long ownerId);
-
-
-    @Query(value = "SELECT oi.item.subcategory as name, SUM(oi.price * oi.count) as totalAmount " +
-            "FROM OrderItem oi " +
-            "WHERE oi.item.subcategory IN :subcategories AND oi.order.createdAt BETWEEN :fromDate AND :toDate AND oi.owner.id = :ownerId AND oi.order.isCancelled = false " +
-            "GROUP BY oi.item.subcategory")
-    List<NameAmountPro> findSubcategoriesSales(LocalDateTime fromDate, LocalDateTime toDate, List<String> subcategories, Long ownerId);
+//    @Query(value = "SELECT oi.item.category as name, SUM(oi.price * oi.count) as totalAmount " +
+//            "FROM OrderItem oi " +
+//            "WHERE oi.item.category IN :categories AND oi.order.createdAt BETWEEN :fromDate AND :toDate AND oi.owner.id = :ownerId AND oi.order.isCancelled = false " +
+//            "GROUP BY oi.item.category")
+//    List<NameAmountPro> findCategoriesSales(LocalDateTime fromDate, LocalDateTime toDate, List<String> categories, Long ownerId);
+//
+//
+//    @Query(value = "SELECT oi.item.subcategory as name, SUM(oi.price * oi.count) as totalAmount " +
+//            "FROM OrderItem oi " +
+//            "WHERE oi.item.subcategory IN :subcategories AND oi.order.createdAt BETWEEN :fromDate AND :toDate AND oi.owner.id = :ownerId AND oi.order.isCancelled = false " +
+//            "GROUP BY oi.item.subcategory")
+//    List<NameAmountPro> findSubcategoriesSales(LocalDateTime fromDate, LocalDateTime toDate, List<String> subcategories, Long ownerId);
 
 
     @Query(value = "SELECT oi.product_group as name, SUM(oi.price * oi.count) as totalAmount " +

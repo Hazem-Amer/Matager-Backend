@@ -1,0 +1,48 @@
+package com.matager.app.category;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.matager.app.ItemImage.ItemImage;
+import com.matager.app.common.domain.BaseEntity;
+import com.matager.app.owner.Owner;
+import com.matager.app.store.Store;
+import com.matager.app.subcategory.SubCategory;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties({"owner", "store"})
+@Table(name = "category")
+public class Category extends BaseEntity {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<SubCategory> subCategories;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "is_visible", nullable = false)
+    private Boolean isVisible;
+
+    @Column(name = "image")
+    private String categoryImageUrl;
+
+    @Column(name = "icon")
+    private String categoryIconUrl;
+
+}

@@ -24,13 +24,12 @@ public class FileUploadServiceImpl implements FileUploadService {
         String objectName = prefix + file.getOriginalFilename();
         InputStream inputStream = file.getInputStream();
 
-        inputStream = new FileInputStream(ResourceUtils.getFile("classpath:test.txt"));
-
         PutObjectRequest putObjectRequest =
                 PutObjectRequest.builder()
                         .namespaceName(namespaceName)
                         .bucketName(bucketName)
                         .objectName(objectName)
+//                        .contentType(file.getContentType())
                         .contentLength(file.getSize())
                         .contentType(file.getContentType())
                         .putObjectBody(inputStream)
@@ -53,5 +52,8 @@ public class FileUploadServiceImpl implements FileUploadService {
     public String upload(MultipartFile file) throws Exception {
         return upload("", file);
     }
-
+    @Override
+    public String upload(FileType fileType ,MultipartFile file) throws Exception {
+            return upload(fileType.getPrefix(),file);
+    }
 }

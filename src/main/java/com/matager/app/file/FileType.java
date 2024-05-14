@@ -1,9 +1,10 @@
 package com.matager.app.file;
 
 public enum FileType {
-    GENERAL("general/"), ITEM_PHOTO("photos/item"),
-    CATEGORY_PHOTO("photos/category");
-
+    GENERAL("general/"), ITEM_PHOTO("images/item/"),
+    CATEGORY_PHOTO("images/category/"),
+    CATEGORY_ICON("images/category_icon/"),
+    SUB_CATEGORY_ICON("images/sub_category_icon/");
     String prefix;
 
     FileType(String prefix) {

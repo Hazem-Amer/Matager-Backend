@@ -1,10 +1,17 @@
 package com.matager.app.Item;
 
+import com.matager.app.ItemImage.ItemImage;
+import com.matager.app.category.Category;
+import com.matager.app.subcategory.SubCategory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Validated
@@ -15,18 +22,35 @@ public class ItemModel {
 
     private String storeUuid;
 
-    private Long itemNo; // ArtikelNr
-    private String name; // ArtikelName
-    private String iconUrl;
-    private Double purchasePrice;
-    private Double listPrice; // Selling price
-    private String productGroup;
-    private String category;
-    private String subcategory;
-    private String unit;
-    private Double amount; // Stock level
+    private Long itemNo;
+
+    private String name;
+
+    private String mainImage;
+
+    private Double costPrice;
+
+    private Double listPrice;
+
+    private Integer maximumOrderQuantity;
+
+    private Integer minimumOrderQuantity;
+
+    private Double quantity;
+
+    private String skuNumber;
+
+    private Double weight;
+
+    private Long categoryId;
+
+    private Long subcategoryId;
+
+    private String description;
+
     private boolean isSale;
-    private Double minimumStockLevel;
-    private String defaultSupplier;
+
+    private Boolean isVisible;
+
 
 }
