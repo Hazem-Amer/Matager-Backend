@@ -12,7 +12,8 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubCategoryModel {
-    private long subCategoryId;
+    private Long storeId;
+    private Long subCategoryId;
     private String name;
     private Boolean isVisible;
     private String subCategoryIconUrl;

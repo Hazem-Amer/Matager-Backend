@@ -4,6 +4,7 @@ import com.matager.app.file.FileType;
 import com.matager.app.file.FileUploadService;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
+import com.matager.app.store.StoreRepository;
 import com.matager.app.user.User;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
 
     private final SubCategoryRepository subCategoryRepository;
     private final FileUploadService fileUploadService;
+    private final StoreRepository storeRepository;
 
     @Override
     public List<SubCategory> getSubCategories(Long storeId) {
@@ -29,14 +31,14 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
 
     @Override
     public SubCategory getSubCategory(Owner owner, User user, Store store, Long subCategoryId) {
-        return subCategoryRepository.findById(subCategoryId).orElseThrow(()-> new RuntimeException("SubCategory not found with ID: " + subCategoryId));
+        return subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("SubCategory not found with ID: " + subCategoryId));
     }
 
     @Override
     public SubCategory addSubCategory(Owner owner, User user, Store store, MultipartFile iconFile, SubCategoryModel newSubCategory) {
         SubCategory subCategory = new SubCategory();
         subCategory.setOwner(owner);
-        subCategory.setStore(store);
+        subCategory.setStore(storeRepository.findById(newSubCategory.getStoreId()).orElseThrow(() -> new RuntimeException("Store not fount")));
         subCategory.setName(newSubCategory.getName());
         subCategory.setIsVisible(newSubCategory.getIsVisible());
         String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, iconFile);
@@ -47,27 +49,22 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
 
     @Override
     public SubCategory updateSubCategory(Owner owner, Store store, Long subCategoryId, MultipartFile newIconFile, SubCategoryModel newSubCategory) {
-        Optional<SubCategory> optionalSubCategory = subCategoryRepository.findById(subCategoryId);
-        SubCategory subCategory;
-        if (optionalSubCategory.isPresent()) {
-            subCategory = optionalSubCategory.get();
-            subCategory.setOwner(owner);
-            subCategory.setStore(store);
-            if (newSubCategory.getName() != null) {
-                subCategory.setName(newSubCategory.getName());
-            }
-            if (newSubCategory.getIsVisible() != null) {
-                subCategory.setIsVisible(newSubCategory.getIsVisible());
-            }
-            if (newIconFile != null) {
-                String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, newIconFile);
-                subCategory.setCategoryIconUrl(iconUrl);
-            }
+        SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("Subcategory not fount"));
 
-            subCategoryRepository.saveAndFlush(subCategory);
-            return subCategory;
-        } else
-            throw new NotFoundException("Category not found with ID: " + newSubCategory.getSubCategoryId());
+        if (newSubCategory.getName() != null) {
+            subCategory.setName(newSubCategory.getName());
+        }
+        if (newSubCategory.getIsVisible() != null) {
+            subCategory.setIsVisible(newSubCategory.getIsVisible());
+        }
+        if (newIconFile != null) {
+            String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, newIconFile);
+            subCategory.setCategoryIconUrl(iconUrl);
+        }
+
+        subCategoryRepository.saveAndFlush(subCategory);
+        return subCategory;
+
 
     }
 

@@ -3,6 +3,8 @@ package com.matager.app.category;
 import com.matager.app.file.FileUploadService;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
+import com.matager.app.store.StoreRepository;
+import com.matager.app.store.StoreService;
 import com.matager.app.subcategory.SubCategory;
 import com.matager.app.subcategory.SubCategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final FileUploadService fileUploadService;
     private final SubCategoryRepository subCategoryRepository;
+    private final StoreRepository storeRepository;
 
     @Override
     public List<Category> getCategories(Long storeId) {
@@ -38,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category addCategory(Owner owner, Store store, CategoryModel newCategory, MultipartFile imageFile, MultipartFile iconFile) {
         Category category = new Category();
         category.setOwner(owner);
-        category.setStore(store);
+        category.setStore(storeRepository.findById(newCategory.getStoreId()).orElseThrow(()->new RuntimeException("Store not fount")));
         category.setName(newCategory.getName());
         category.setIsVisible(newCategory.getIsVisible());
         String imageUrl = fileUploadService.upload(CATEGORY_IMAGE, imageFile);
@@ -63,8 +66,6 @@ public class CategoryServiceImpl implements CategoryService {
     public Category updateCategory(Owner owner, Store store, MultipartFile imageFile, MultipartFile iconFile, Long categoryId, CategoryModel newCategory) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found with ID: " + newCategory.getCategoryId()));
 
-        category.setOwner(owner);
-        category.setStore(store);
         if (newCategory.getName() != null) {
             category.setName(newCategory.getName());
         }
