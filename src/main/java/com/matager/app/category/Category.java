@@ -30,9 +30,6 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<SubCategory> subCategories;
-
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -44,5 +41,15 @@ public class Category extends BaseEntity {
 
     @Column(name = "icon")
     private String iconUrl;
+    public CategoryModel toModel() {
+        return CategoryModel.builder()
+                .storeId(this.store != null ? this.store.getId() : null)
+                .categoryId(this.getId())
+                .name(this.name)
+                .isVisible(this.isVisible)
+                .imageUrl(this.imageUrl)
+                .iconUrl(this.iconUrl)
+                .build();
+    }
 
 }

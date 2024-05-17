@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"owner", "store"})
+@JsonIgnoreProperties({"owner", "store","category"})
 @Table(name = "sub_category")
 public class SubCategory extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)

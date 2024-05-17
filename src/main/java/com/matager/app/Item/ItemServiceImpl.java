@@ -114,7 +114,6 @@ public class ItemServiceImpl implements ItemService {
         ArrayList<ItemImage> itemImages = new ArrayList<>();
         for (MultipartFile file : imageMultipartFiles) {
             String imageUrl = fileUploadService.upload(FileType.ITEM_IMAGE, file);
-            System.out.println(newItem.getMainImage().equals(file.getName()));
             ItemImage image = itemImageRepository.saveAndFlush(new ItemImage(item, imageUrl, newItem.getMainImage().equals(file.getName())));
             itemImages.add(image);
         }
