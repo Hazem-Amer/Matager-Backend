@@ -17,7 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -25,7 +27,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "owner", "store","itemImages"})
+@JsonIgnoreProperties({"id", "owner", "store"})
 @Table(name = "item",
         indexes = {
                 @Index(name = "idx_item_store_id", columnList = "store_id"),
@@ -42,14 +44,17 @@ public class Item extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id")
     private SubCategory subcategory;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToMany(fetch = FetchType.LAZY)
     private List<ItemImage> itemImages;
 

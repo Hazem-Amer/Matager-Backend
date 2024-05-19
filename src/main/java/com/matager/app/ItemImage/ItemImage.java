@@ -1,5 +1,6 @@
 package com.matager.app.ItemImage;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.matager.app.Item.Item;
 import com.matager.app.common.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "item_image")
+@JsonIgnoreProperties({"item"})
 public class ItemImage extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

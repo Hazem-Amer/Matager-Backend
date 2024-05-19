@@ -18,7 +18,13 @@ import com.matager.app.subcategory.SubCategoryRepository;
 import com.matager.app.user.User;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,37 +44,72 @@ public class ItemServiceImpl implements ItemService {
     private final SubCategoryRepository subCategoryRepository;
     private final StoreRepository storeRepository;
     private final FileUploadService fileUploadService;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public List<Item> getItems(Long ownerId) {
-        return itemRepository.findAllByOwnerId(ownerId, PageRequest.of(0, 100));
+    public Item getItem(Long itemId) {
+        return itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item : " + itemId + " not found"));
     }
 
 
     @Override
-    public List<Item> getItems(Long ownerId, int pageNumber, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-        return itemRepository.findAllByOwnerId(ownerId, pageRequest);
+    public Page<Item> getItemsWithFiler(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Item> itemPage;
+        boolean isNameProvided = name != null && !name.isEmpty();
+
+        if (isNameProvided && categoryId != null && subCategoryId != null && isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, name, categoryId, subCategoryId, isVisible, pageable);
+        } else if (isNameProvided && categoryId != null && subCategoryId != null) {
+            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryId(storeId, name, categoryId, subCategoryId, pageable);
+        } else if (isNameProvided && categoryId != null && isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndIsVisible(storeId, name, categoryId, isVisible, pageable);
+        } else if (isNameProvided && subCategoryId != null && isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryIdAndIsVisible(storeId, name, subCategoryId, isVisible, pageable);
+        } else if (categoryId != null && subCategoryId != null && isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, categoryId, subCategoryId, isVisible, pageable);
+        } else if (isNameProvided && categoryId != null) {
+            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryId(storeId, name, categoryId, pageable);
+        } else if (isNameProvided && subCategoryId != null) {
+            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryId(storeId, name, subCategoryId, pageable);
+        } else if (categoryId != null && subCategoryId != null) {
+            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryId(storeId, categoryId, subCategoryId, pageable);
+        } else if (isNameProvided && isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndItemNameAndIsVisible(storeId, name, isVisible, pageable);
+        } else if (categoryId != null && isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndCategoryIdAndIsVisible(storeId, categoryId, isVisible, pageable);
+        } else if (subCategoryId != null && isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndSubcategoryIdAndIsVisible(storeId, subCategoryId, isVisible, pageable);
+        } else if (isNameProvided) {
+            itemPage = itemRepository.findByStoreIdAndItemName(storeId, name, pageable);
+        } else if (categoryId != null) {
+            itemPage = itemRepository.findByStoreIdAndCategoryId(storeId, categoryId, pageable);
+        } else if (subCategoryId != null) {
+            itemPage = itemRepository.findByStoreIdAndSubcategoryId(storeId, subCategoryId, pageable);
+        } else if (isVisible != null) {
+            itemPage = itemRepository.findByStoreIdAndIsVisible(storeId, isVisible, pageable);
+        } else {
+            itemPage = itemRepository.findByStoreId(storeId, pageable);
+        }
+
+        return itemPage;
+//
+//        List<Item> items = new ArrayList<>(itemPage.getContent());
+//        List<ItemModel> itemModels = new ArrayList<>();
+//        for(Item item :items)
+//            itemModels.add(modelMapper.map(item,ItemModel.class));
+
     }
 
-    @Override
-    public List<Item> getSaleItems(Long ownerId, int pageNumber, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-        return itemRepository.findAllByOwnerIdAndIsSale(ownerId, true, pageRequest);
-    }
 
     @Override
-    public List<Item> getSaleItems(Long ownerId) {
-        return itemRepository.findAllByOwnerIdAndIsSale(ownerId, true);
-    }
-
-    @Transactional
-    @Override
-    public Item saveItem(User user, ItemModel newItem) {
-        Owner owner = user.getOwner();
-
-        Store store;
-
+    public Item saveItem(Owner owner, User user, Store store, ItemModel newItem, List<MultipartFile> imageMultipartFiles) {
+        Item item = new Item();
+        Category category = categoryRepository.findById(newItem.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found."));
+        ;
+        SubCategory subCategory = subCategoryRepository.findById(newItem.getSubcategoryId()).orElseThrow(() -> new RuntimeException("Subcategory not found."));
+        ;
+        item.setOwner(owner);
         if (newItem.getStoreUuid() != null) {
             store = storeRepository.findByOwnerIdAndUuid(owner.getId(), newItem.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found."));
         } else {
@@ -75,31 +117,13 @@ public class ItemServiceImpl implements ItemService {
                 throw new RuntimeException("No default store found, please specify store uuid.");
             store = user.getDefaultStore();
         }
-
-        return saveItem(owner, user, store, newItem);
-    }
-
-    @Override
-    public Item saveItem(Owner owner, User user, Store store, ItemModel newItem, List<MultipartFile> imageMultipartFiles) {
-        Item item = new Item();
-        Optional<Category> optionalCategory = categoryRepository.findById(newItem.getCategoryId());
-        Optional<SubCategory> optionalSubCategory = subCategoryRepository.findById(newItem.getSubcategoryId());
-        item.setOwner(owner);
         item.setStore(store);
         item.setItemNo(newItem.getItemNo());
         item.setItemName(newItem.getName());
         item.setSale(newItem.isSale());
         item.setListPrice(newItem.getListPrice());
-        if (optionalCategory.isPresent())
-            item.setCategory(optionalCategory.get());
-        else
-            throw new NotFoundException("Category not found with ID: " + newItem.getCategoryId());
-        if (optionalSubCategory.isPresent())
-            item.setSubcategory(optionalSubCategory.get());
-        else
-            throw new NotFoundException("Sub Category not found with ID: " + newItem.getSubcategoryId());
-
-
+        item.setCategory(category);
+        item.setSubcategory(subCategory);
         item.setMaximumOrderQuantity(newItem.getMaximumOrderQuantity());
         item.setMinimumOrderQuantity(newItem.getMinimumOrderQuantity());
         item.setQuantity(newItem.getQuantity());
@@ -111,77 +135,27 @@ public class ItemServiceImpl implements ItemService {
 
         item = itemRepository.saveAndFlush(item);
 
-        ArrayList<ItemImage> itemImages = new ArrayList<>();
-        for (MultipartFile file : imageMultipartFiles) {
-            String imageUrl = fileUploadService.upload(FileType.ITEM_IMAGE, file);
-            ItemImage image = itemImageRepository.saveAndFlush(new ItemImage(item, imageUrl, newItem.getMainImage().equals(file.getName())));
-            itemImages.add(image);
-        }
-        item.setItemImages(itemImages);
+        saveItemImage(newItem, imageMultipartFiles, item);
 
-        item = itemRepository.saveAndFlush(item);
+        itemRepository.saveAndFlush(item);
 
         return item;
     }
 
-
-    @Override
-    public Item saveItem(Owner owner, User user, Store store, ItemModel newItem) {
-        Item item = new Item();
-        Optional<Category> optionalCategory = categoryRepository.findById(newItem.getCategoryId());
-        Optional<SubCategory> optionalSubCategory = subCategoryRepository.findById(newItem.getSubcategoryId());
-
-        item.setOwner(owner);
-        item.setStore(store);
-        item.setItemNo(newItem.getItemNo());
-        item.setItemName(newItem.getName());
-        item.setSale(newItem.isSale());
-        item.setListPrice(newItem.getListPrice());
-
-        if (optionalCategory.isPresent())
-            item.setCategory(optionalCategory.get());
-        else
-            throw new NotFoundException("Category not found with ID: " + newItem.getCategoryId());
-        if (optionalSubCategory.isPresent())
-            item.setSubcategory(optionalSubCategory.get());
-        else
-            throw new NotFoundException("SubCategory not found with ID: " + newItem.getSubcategoryId());
-
-
-        item.setMaximumOrderQuantity(newItem.getMaximumOrderQuantity());
-        item.setMinimumOrderQuantity(newItem.getMinimumOrderQuantity());
-        item.setQuantity(newItem.getQuantity());
-        item.setSkuNumber(newItem.getSkuNumber());
-        item.setWeight(newItem.getWeight());
-        item.setDescription(newItem.getDescription());
-        item.setQuantity(newItem.getQuantity());
-        item.setIsVisible(newItem.getIsVisible());
-
-        item = itemRepository.save(item);
-        itemRepository.flush();
-
-        return item;
-    }
 
     @Transactional
     @Override
-    public Item updateItem(Owner owner, User user, Store store, ItemModel itemModel, List<MultipartFile> imageMultipartFiles) {
-        Item item = itemRepository.findByStoreIdAndItemNo(store.getId(), itemModel.getItemNo()).orElseThrow(() -> new RuntimeException("Item not found."));
-        Optional<Category> optionalCategory = categoryRepository.findById(itemModel.getCategoryId());
-        Optional<SubCategory> optionalSubCategory = subCategoryRepository.findById(itemModel.getSubcategoryId());
+    public Item updateItem(Long storeId, Long itemId, ItemModel itemModel, List<MultipartFile> imageMultipartFiles) {
+        Item item = itemRepository.findByStoreIdAndItemId(storeId, itemId)
+                .orElseThrow(() -> new RuntimeException("Item not found."));
+
         if (itemModel.getName() != null) item.setItemName(itemModel.getName());
+
         if (itemModel.isSale() != item.isSale()) item.setSale(itemModel.isSale());
+
         if (itemModel.getListPrice() != null) item.setListPrice(itemModel.getListPrice());
-        if (optionalCategory.isPresent())
-            item.setCategory(optionalCategory.get());
-        else
-            throw new NotFoundException("Category not found with ID: " + itemModel.getCategoryId());
-        if (optionalSubCategory.isPresent())
-            item.setSubcategory(optionalSubCategory.get());
-        else
-            throw new NotFoundException("SubCategory not found with ID: " + itemModel.getCategoryId());
-        if (itemModel.getCostPrice() != null)
-            item.setCostPrice(itemModel.getCostPrice());
+
+        if (itemModel.getCostPrice() != null) item.setCostPrice(itemModel.getCostPrice());
 
         if (itemModel.getMaximumOrderQuantity() != null)
             item.setMaximumOrderQuantity(itemModel.getMaximumOrderQuantity());
@@ -189,35 +163,54 @@ public class ItemServiceImpl implements ItemService {
         if (itemModel.getMinimumOrderQuantity() != null)
             item.setMinimumOrderQuantity(itemModel.getMinimumOrderQuantity());
 
-        if (itemModel.getQuantity() != null)
-            item.setQuantity(itemModel.getQuantity());
+        if (itemModel.getQuantity() != null) item.setQuantity(itemModel.getQuantity());
 
-        if (itemModel.getSkuNumber() != null)
-            item.setSkuNumber(itemModel.getSkuNumber());
+        if (itemModel.getSkuNumber() != null) item.setSkuNumber(itemModel.getSkuNumber());
 
-        if (itemModel.getWeight() != null)
-            item.setWeight(itemModel.getWeight());
+        if (itemModel.getWeight() != null) item.setWeight(itemModel.getWeight());
 
-        if (itemModel.getDescription() != null)
-            item.setDescription(itemModel.getDescription());
+        if (itemModel.getDescription() != null) item.setDescription(itemModel.getDescription());
 
-        if (itemModel.getIsVisible() != null)
-            item.setIsVisible(itemModel.getIsVisible());
+        if (itemModel.getIsVisible() != null) item.setIsVisible(itemModel.getIsVisible());
+        if (itemModel.getMainImage() != null) {
 
+        }
+        if (itemModel.getCategoryId() != null) {
+            Category category = categoryRepository.findById(itemModel.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found: " + itemModel.getCategoryId()));
+            item.setCategory(category);
+        }
+        if (itemModel.getSubcategoryId() != null) {
+            SubCategory subCategory = subCategoryRepository.findById(itemModel.getSubcategoryId())
+                    .orElseThrow(() -> new RuntimeException("SubCategory not found: " + itemModel.getSubcategoryId()));
+            item.setSubcategory(subCategory);
+        }
         if (imageMultipartFiles != null && !imageMultipartFiles.isEmpty()) {
-            ArrayList<ItemImage> itemImages = new ArrayList<>();
-            for (MultipartFile file : imageMultipartFiles) {
-                String imageUrl = fileUploadService.upload(FileType.ITEM_IMAGE, file);
-                ItemImage image = itemImageRepository.saveAndFlush(new ItemImage(item, imageUrl, itemModel.getMainImage().equals(file.getName())));
-                itemImages.add(image);
-            }
-            item.setItemImages(itemImages);
+            saveItemImage(itemModel, imageMultipartFiles, item);
         }
 
-        item = itemRepository.save(item);
-        itemRepository.flush();
-
+        itemRepository.saveAndFlush(item);
         return item;
+    }
+
+    private void saveItemImage(ItemModel itemModel, List<MultipartFile> imageMultipartFiles, Item item) {
+        ArrayList<ItemImage> itemImages = new ArrayList<>();
+        for (MultipartFile file : imageMultipartFiles) {
+            String imageUrl = fileUploadService.upload(FileType.ITEM_IMAGE, file);
+            ItemImage image = itemImageRepository.saveAndFlush(new ItemImage(item, imageUrl, itemModel.getMainImage().equals(file.getOriginalFilename())));
+            itemImages.add(image);
+        }
+        item.setItemImages(itemImages);
+    }
+
+    @Transactional
+    @Override
+    public void deleteItem(Long itemId) {
+        List<ItemImage> itemImages = itemImageRepository.findAllByItemId(itemId).
+                orElseThrow(() -> new RuntimeException("Cannot get the item images for this item : " + itemId));
+        itemImageRepository.deleteAll(itemImages);
+        itemRepository.deleteById(itemId);
+
     }
 
 

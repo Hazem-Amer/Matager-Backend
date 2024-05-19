@@ -1,5 +1,6 @@
 package com.matager.app.Item;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.matager.app.ItemImage.ItemImage;
 import com.matager.app.category.Category;
 import com.matager.app.subcategory.SubCategory;
@@ -27,6 +28,8 @@ public class ItemModel {
     private String name;
 
     private String mainImage;
+
+    private List<Long> imageIds;
 
     private Double costPrice;
 

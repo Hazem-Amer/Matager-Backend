@@ -27,7 +27,6 @@ public class ItemController {
     private final AuthenticationFacade authenticationFacade;
     private final ItemService itemService;
 
-
     @PostMapping
     public ResponseEntity<ResponseModel> saveItem(@RequestPart(required = false) List<MultipartFile> images, @RequestPart("data") @Valid ItemModel itemModel) {
 
@@ -46,25 +45,57 @@ public class ItemController {
 
     }
 
-    @PatchMapping
-    public ResponseEntity<ResponseModel> updateItem(@RequestPart(required = false) List<MultipartFile> images, @RequestBody @Valid ItemModel itemsModel) {
-        ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder().timeStamp(LocalDateTime.now().toString());
-        try {
-            User user = authenticationFacade.getAuthenticatedUser();
-            Store store = user.getDefaultStore();
-            Owner owner = user.getOwner();
-            return ResponseEntity.ok().body(
-                    ResponseModel.builder()
-                            .timeStamp(LocalDateTime.now().toString())
-                            .status(HttpStatus.OK)
-                            .statusCode(HttpStatus.OK.value())
-                            .message("Items saved successfully.")
-                            .data(Map.of("items", itemService.updateItem(owner, user, store, itemsModel, images)))
-                            .build());
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-        }
+    @GetMapping("/{itemId}")
+    public ResponseEntity<ResponseModel> getItem(@PathVariable Long itemId) {
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This item has been retrieved successfully")
+                        .data(Map.of("item", itemService.getItem(itemId)))
+                        .build());
     }
+
+    @GetMapping
+    public ResponseEntity<ResponseModel> getItems(@RequestParam Long storeId, @RequestParam(name = "search",required = false) String name,
+                                                  @RequestParam(required = false) Long categoryId, @RequestParam(required = false) Long subCategoryId,
+                                                  @RequestParam(required = false) Boolean isVisible, @RequestParam int page, @RequestParam int size) {
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Items of this store have been retrieved successfully")
+                        .data(Map.of("items", itemService.getItemsWithFiler(storeId, name, categoryId, subCategoryId, isVisible, page, size)))
+                        .build());
+    }
+
+
+    @PatchMapping("/{itemId}")
+    public ResponseEntity<ResponseModel> updateItem(@PathVariable Long itemId,@RequestParam Long storeId,@RequestPart(required = false) List<MultipartFile> images, @RequestPart("data") @Valid ItemModel itemsModel) {
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This item has been updated successfully")
+                        .data(Map.of("item", itemService.updateItem(storeId,itemId, itemsModel,images)))
+                        .build());
+    }
+
+
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<ResponseModel> deleteItem(@PathVariable Long itemId) {
+        itemService.deleteItem(itemId);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This item has been deleted successfully")
+                        .build());
+    }
+
 
 }

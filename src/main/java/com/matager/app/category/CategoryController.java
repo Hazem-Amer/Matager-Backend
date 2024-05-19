@@ -23,7 +23,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CategoryController {
     private final AuthenticationFacade authenticationFacade;
-    private final ItemService itemService;
     private final CategoryService categoryService;
 
     @PostMapping
