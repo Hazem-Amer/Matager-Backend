@@ -3,6 +3,7 @@ package com.matager.app.file;
 import com.matager.app.common.config.ObjectStorageClientConfig;
 import com.oracle.bmc.objectstorage.requests.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
@@ -40,6 +42,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             objectStorageClientConfig.getObjectStorage().putObject(putObjectRequest);
         } catch (Exception e) {
             // TODO: add logging here
+            log.error("Error uploading file..", e);
         } finally {
             try {
                 objectStorageClientConfig.getObjectStorage().close();
