@@ -38,7 +38,6 @@ public class FileUploadServiceImpl implements FileUploadService {
                             .build();
 
             objectStorageClientConfig.getObjectStorage().putObject(putObjectRequest);
-            return accessUrl + objectName;
         } catch (Exception e) {
             // TODO: add logging here
         } finally {
@@ -49,8 +48,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             }
         }
 
-        throw new RuntimeException("Unexpected error while uploading file");
-
+        return accessUrl + objectName;
     }
 
     @Override

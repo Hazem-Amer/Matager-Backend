@@ -1,5 +1,6 @@
-package com.matager.app.auth;
+package com.matager.app.user;
 
+import com.matager.app.auth.AuthenticationFacade;
 import com.matager.app.common.helper.res_model.ResponseModel;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.StoreService;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -63,16 +65,18 @@ public class StoreAuthController {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder()
                 .timeStamp(LocalDateTime.now().toString());
 
-        // TODO: Implement later
-//        User user = centralUserService.signNewUser(newUserModel);
-//        String token = tokenService.generateToken(user, newUserModel.getShardNum());
-//        log.info("new user created: " + user.getEmail());
+
+        newUserModel.setRole(UserRole.STORE_USER);
+        User user = userService.addNewUser(newUserModel);
+        String token = tokenService.generateToken(user);
+        log.info("new user created: " + user.getEmail());
 
         return ResponseEntity.ok(
                 response
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .message("User created successfully.")
+                        .data(Map.of("token", token))
                         .build());
 
     }
@@ -80,12 +84,23 @@ public class StoreAuthController {
 
     @GetMapping("/@me")
     public ResponseEntity<?> getUserData() {
-
-        // TODO: Implement later
-
         User user = authenticationFacade.getAuthenticatedUser();
         Owner owner = user.getOwner();
         Jwt jwt = authenticationFacade.getJwt();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("userName", user.getName());
+        data.put("userEmail", user.getEmail());
+        data.put("userRole", user.getRole());
+        data.put("userDefaultStoreId", user.getDefaultStore() != null ? user.getDefaultStore().getId() : "No Default Store.");
+        data.put("userStores",
+                storeService.getStores(owner.getId()).stream()
+                        .map(s ->
+                                Map.of("id", s.getId(), "name", s.getName(), "iconUrl", "")).toArray());
+
+        data.put("currencyCode", "EGP"); // TODO: change later
+        data.put("currencySymbol", "$"); // TODO: change later
+        data.put("token", tokenService.generateToken(user, jwt.getExpiresAt()));
 
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -93,6 +108,7 @@ public class StoreAuthController {
                         .statusCode(HttpStatus.OK.value())
                         .status(HttpStatus.OK)
                         .message("User Data")
+                        .data(data)
                         .build()
         );
     }

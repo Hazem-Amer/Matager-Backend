@@ -5,7 +5,6 @@
 package com.matager.app.user.model;
 
 import com.matager.app.user.UserRole;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,5 +33,7 @@ public class NewUserModel {
     @NotEmpty(message = "Name can not be empty.")
     private String name;
     private UserRole role;
-    private String defaultStoreUuid;
+
+    // StoreId is used for STORE_USER s only
+    private String storeId;
 }

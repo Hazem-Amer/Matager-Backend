@@ -10,17 +10,11 @@ import com.matager.app.user.model.NewUserModel;
 import com.matager.app.user.model.SigninModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,7 +55,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    // Just admin can create new user
     @Override
     public User addNewUser(NewUserModel newUser) {
 
@@ -90,8 +83,8 @@ public class UserServiceImpl implements UserService {
             user.setRole(newUser.getRole());
         }
 
-        if (newUser.getDefaultStoreUuid() != null) {
-            user.setDefaultStore(storeRepository.findByOwnerIdAndUuid(owner.getId(), newUser.getDefaultStoreUuid()).orElseThrow(() -> new IllegalStateException("Store not found.")));
+        if (newUser.getStoreId() != null) {
+            user.setDefaultStore(storeRepository.findByOwnerIdAndId(owner.getId(), newUser.getStoreId()).orElseThrow(() -> new IllegalStateException("Store not found.")));
         }
 
         user.setProfileImageUrl("Default Profile Image Url");
@@ -117,7 +110,7 @@ public class UserServiceImpl implements UserService {
                             .email(store.getUuid() + "store@orderking.fakedmoain.com")
                             .password("s" + store.getUuid().substring(0, 11) + "S0084@#")
                             .role(UserRole.POS)
-                            .defaultStoreUuid(store.getUuid())
+                            .storeId(store.getUuid())
                             .build()
             );
             return getPOSUser(storeUuid);
