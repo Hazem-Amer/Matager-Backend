@@ -57,7 +57,7 @@ public class SubCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseModel> getSubCategories(@RequestParam(value = "storeId", required = true) Long storeId) {
+    public ResponseEntity<ResponseModel> getSubCategories(@RequestParam(value = "storeId") Long storeId) {
 
         User user = authenticationFacade.getAuthenticatedUser();
         log.info("user:" + user);

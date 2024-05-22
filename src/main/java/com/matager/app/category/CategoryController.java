@@ -84,7 +84,7 @@ public class CategoryController {
                         .timeStamp(LocalDateTime.now().toString())
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
-                        .message("This item has been updated successfully")
+                        .message("This category has been updated successfully")
                         .data(Map.of("category", categoryService.updateCategory(owner, store, image, icon, categoryId, newCategory)))
                         .build());
 
@@ -102,7 +102,7 @@ public class CategoryController {
                         .timeStamp(LocalDateTime.now().toString())
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
-                        .message("This item has been deleted successfully")
+                        .message("This category has been deleted successfully")
                         .build());
 
     }

@@ -20,9 +20,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // ----------------------- Widget Queries ----------------------- //
     boolean isSunday = true; // TODO: implement logic to determine the first day of the week based on user country.
 
-    Optional<Order> findByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
+//    Optional<Order> findByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
 
-    boolean existsByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
+//    boolean existsByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
 
     @Modifying
     @Query(value = "DELETE FROM `order` o WHERE o.store_id = :storeId", nativeQuery = true)

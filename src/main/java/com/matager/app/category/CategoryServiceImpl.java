@@ -4,17 +4,14 @@ import com.matager.app.file.FileUploadService;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
-import com.matager.app.store.StoreService;
 import com.matager.app.subcategory.SubCategory;
 import com.matager.app.subcategory.SubCategoryRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.matager.app.file.FileType.CATEGORY_ICON;
 import static com.matager.app.file.FileType.CATEGORY_IMAGE;
@@ -30,12 +27,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryModel> getCategories(Long storeId) {
         List<CategoryModel> categoryModels = new ArrayList<>();
-        List<Category> categories = categoryRepository.findAllCategoryByStoreId(storeId);
+        List<Category> categories = categoryRepository.findAllCategoryByStoreId(storeId)
+                .orElseThrow(() -> new RuntimeException("Store: " + storeId + " has no categories"));
         for (Category category : categories) {
             CategoryModel categoryModel = category.toModel();
             if (categoryModel != null) {
-                List<Long> categorySubcategoryIds = subCategoryRepository.findCategorySubCategoryIds(storeId, category.getId());
-                if(categorySubcategoryIds !=null) categoryModel.setSubCategoryIds(categorySubcategoryIds);
+                List<SubCategory> subCategories = subCategoryRepository.findAllByStoreIdAndCategoryId(storeId, category.getId())
+                        .orElseThrow(() -> new RuntimeException("Category: " + category.getId() + " has no SubCategories"));
+                categoryModel.setSubCategories(subCategories);
                 categoryModels.add(categoryModel);
             }
         }
@@ -46,19 +45,21 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryModel getCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
         Store store = storeRepository.findById(category.getStore().getId()).orElseThrow(() -> new RuntimeException("Store not found"));
-        subCategoryRepository.findCategorySubCategoryIds(store.getId(),categoryId);
+        subCategoryRepository.findCategorySubCategoryIds(store.getId(), categoryId);
         CategoryModel categoryModel = category.toModel();
         if (categoryModel != null) {
-            List<Long> categorySubcategoryIds = subCategoryRepository.findCategorySubCategoryIds(store.getId(), category.getId());
-            if(categorySubcategoryIds !=null) categoryModel.setSubCategoryIds(categorySubcategoryIds);
+            List<SubCategory> subCategories = subCategoryRepository.findAllByStoreIdAndCategoryId(store.getId(), category.getId())
+                    .orElseThrow(() -> new RuntimeException("Category: " + categoryId + " has no SubCategories"));
+            categoryModel.setSubCategories(subCategories);
         }
         return categoryModel;
     }
 
 
     @Override
-    public Category addCategory(Owner owner, Store store, CategoryModel newCategory, MultipartFile imageFile, MultipartFile iconFile) {
+    public CategoryModel addCategory(Owner owner, Store store, CategoryModel newCategory, MultipartFile imageFile, MultipartFile iconFile) {
         Category category = new Category();
+        CategoryModel categoryModel;
         category.setOwner(owner);
         category.setStore(storeRepository.findById(newCategory.getStoreId()).orElseThrow(() -> new RuntimeException("Store not found")));
         category.setName(newCategory.getName());
@@ -67,8 +68,9 @@ public class CategoryServiceImpl implements CategoryService {
         category.setImageUrl(imageUrl);
         String iconUrl = fileUploadService.upload(CATEGORY_ICON, iconFile);
         category.setIconUrl(iconUrl);
-        return categoryRepository.saveAndFlush(category);
-
+        category = categoryRepository.saveAndFlush(category);
+        categoryModel = category.toModel();
+        return categoryModel;
     }
 
     @Override
@@ -92,23 +94,40 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
 
-        if (newCategory.getSubCategoryIds() != null && !newCategory.getSubCategoryIds().isEmpty()) {
-            for (Long subCategoryId : newCategory.getSubCategoryIds()) {
-                SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("SubCategory with id : " +subCategoryId+ " not found"));
-                if(subCategory.getStore().getId()==category.getStore().getId())
-                    subCategoryRepository.updateCategoryId(category.getId(), subCategoryId,  category.getOwner().getId(),category.getStore().getId());
-                else
-                    throw new RuntimeException("SubCategory with id : " +subCategoryId+ " is not found in the same store of the category: "+category.getId());
-
-            }
-            List<Long> categorySubcategoryIds = subCategoryRepository.findCategorySubCategoryIds(category.getStore().getId(), category.getId());
-            if(categorySubcategoryIds !=null) categoryModel.setSubCategoryIds(categorySubcategoryIds);
-            categoryModel.setSubCategoryIds(categorySubcategoryIds);
-        }
-        categoryRepository.saveAndFlush(category);
+//        if (newCategory.getSubCategoryIds() != null && !newCategory.getSubCategoryIds().isEmpty()) {
+//            for (Long subCategoryId : newCategory.getSubCategoryIds()) {
+//                SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("SubCategory with id : " +subCategoryId+ " not found"));
+//                if(subCategory.getStore().getId()==category.getStore().getId())
+//                    subCategoryRepository.updateCategoryId(category.getId(), subCategoryId,  category.getOwner().getId(),category.getStore().getId());
+//                else
+//                    throw new RuntimeException("SubCategory with id : " +subCategoryId+ " is not found in the same store of the category: "+category.getId());
+//
+//            }
+//            List<Long> categorySubcategoryIds = subCategoryRepository.findCategorySubCategoryIds(category.getStore().getId(), category.getId());
+//            if(categorySubcategoryIds !=null)
+//                categoryModel.setSubCategoryIds(categorySubcategoryIds);
+//        }
+        category = categoryRepository.saveAndFlush(category);
+        assignSubCategoryIdsToCategory(category, newCategory, categoryModel);
         subCategoryRepository.flush();
         return categoryModel;
 
+    }
+
+    private void assignSubCategoryIdsToCategory(Category category, CategoryModel newCategory, CategoryModel categoryModel) {
+        if (newCategory.getSubCategoryIds() != null && !newCategory.getSubCategoryIds().isEmpty()) {
+            for (Long subCategoryId : newCategory.getSubCategoryIds()) {
+                SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("SubCategory with id : " + subCategoryId + " not found"));
+                if (subCategory.getStore().getId() == category.getStore().getId())
+                    subCategoryRepository.updateCategoryById(category.getId(), subCategoryId, category.getOwner().getId(), category.getStore().getId());
+                else
+                    throw new RuntimeException("SubCategory with id : " + subCategoryId + " is not found in the same store of this category: ");
+
+            }
+            List<SubCategory> subCategories = subCategoryRepository.findAllByStoreIdAndCategoryId(category.getStore().getId(), category.getId())
+                    .orElseThrow(() -> new RuntimeException("Category with id : " + category.getId() + " has no SubCategories"));
+            categoryModel.setSubCategories(subCategories);
+        }
     }
 
     @Override
@@ -121,7 +140,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryModel.getSubCategoryIds() != null && !categoryModel.getSubCategoryIds().isEmpty()) {
             for (Long subCategoryId : categoryModel.getSubCategoryIds()) {
                 subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("SubCategory not found"));
-                subCategoryRepository.updateCategoryId(category.getOwner().getId(), category.getStore().getId(), subCategoryId, category.getId());
+                subCategoryRepository.updateCategoryById(category.getOwner().getId(), category.getStore().getId(), subCategoryId, category.getId());
             }
         }
     }

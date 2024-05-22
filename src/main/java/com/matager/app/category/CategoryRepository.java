@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Query(value = "SELECT * FROM category WHERE store_id = :storeId ", nativeQuery = true)
-    List<Category> findAllCategoryByStoreId(Long storeId);
+
+    Optional<List<Category>> findAllCategoryByStoreId(Long storeId);
     @Query(value = "SELECT * FROM category WHERE store_id = :storeId AND  id = :categoryId", nativeQuery = true)
     Category findCategoryByStoreIdAndId(Long categoryId,Long storeId);
 }

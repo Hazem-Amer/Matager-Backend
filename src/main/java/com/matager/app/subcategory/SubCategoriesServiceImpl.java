@@ -1,18 +1,15 @@
 package com.matager.app.subcategory;
 
-import com.matager.app.file.FileType;
 import com.matager.app.file.FileUploadService;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
 import com.matager.app.user.User;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.matager.app.file.FileType.SUB_CATEGORY_ICON;
 
@@ -26,7 +23,8 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
 
     @Override
     public List<SubCategory> getSubCategories(Long storeId) {
-        return subCategoryRepository.findSubCategoryByStoreId(storeId);
+    return subCategoryRepository.findAllByStoreId(storeId)
+                    .orElseThrow(() -> new RuntimeException("store: " +storeId+" has no SubCategories"));
     }
 
     @Override
