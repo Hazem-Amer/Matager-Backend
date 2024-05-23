@@ -29,6 +29,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -51,11 +52,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
-                        auth
-                                .requestMatchers("/v1/auth/login").permitAll()
-                                .requestMatchers("/v1/auth/sign_up").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
-                                .requestMatchers("/v1/owner").permitAll() // TODO: DANGER this should be secure, but we made it until we make an proper auth configs with central server
-                                .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
+                                auth
+                                        .requestMatchers("/v1/auth/login").permitAll()
+                                        .requestMatchers("/v1/auth/sign_up").permitAll()
+                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/auth/login")).permitAll()
+                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/auth/sign_up")).permitAll()
+//                                .requestMatchers("/v1/store/auth/[A-Za-z0-9]+/sign_up").permitAll()
+                                        .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
                 ).oauth2ResourceServer().jwt()
                 .decoder(jwtDecoder())
                 .jwtAuthenticationConverter(new TokenAuthenticationConverter())

@@ -94,32 +94,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getPOSUser(String storeUuid) {
-        User signedUser = authenticationFacade.getAuthenticatedUser();
-        Owner owner = signedUser.getOwner();
-
-        Store store = storeRepository.findByOwnerIdAndUuid(signedUser.getOwner().getId(), storeUuid).orElseThrow(() -> new IllegalStateException("Store not found."));
-
-        Optional<User> posUser = userRepository.findByOwnerIdAndDefaultStoreUuidAndAndRole(owner.getId(), store.getUuid(), UserRole.POS);
-
-        // Create POS user if not created
-        if (posUser.isEmpty()) {
-            addNewUser(
-                    NewUserModel.builder()
-                            .name(store.getName() + " POS")
-                            .email(store.getUuid() + "store@orderking.fakedmoain.com")
-                            .password("s" + store.getUuid().substring(0, 11) + "S0084@#")
-                            .role(UserRole.POS)
-                            .storeId(store.getUuid())
-                            .build()
-            );
-            return getPOSUser(storeUuid);
-        }
-
-        return posUser.get();
-    }
-
-    @Override
     @Transactional
     public User deleteUser(String uuid) {
 //        User signedUser = authenticationFacade.getAuthenticatedUser();

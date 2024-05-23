@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/auth/store")
+@RequestMapping("/v1/store/{storeId}/auth")
 @RequiredArgsConstructor
 public class StoreAuthController {
 
@@ -61,11 +61,11 @@ public class StoreAuthController {
     }
 
     @PostMapping("/sign_up")
-    public ResponseEntity<?> createUser(@Valid @RequestBody NewUserModel newUserModel) {
+    public ResponseEntity<?> createUser(@PathVariable Long storeId, @Valid @RequestBody NewUserModel newUserModel) {
         ResponseModel.ResponseModelBuilder<?, ?> response = ResponseModel.builder()
                 .timeStamp(LocalDateTime.now().toString());
 
-
+        newUserModel.setStoreId(storeId);
         newUserModel.setRole(UserRole.STORE_USER);
         User user = userService.addNewUser(newUserModel);
         String token = tokenService.generateToken(user);

@@ -14,7 +14,6 @@ public interface UserService {
 
     User addNewUser(NewUserModel newUser);
 
-    User getPOSUser(String storeUuid);
 
     User deleteUser(String uuid);
 

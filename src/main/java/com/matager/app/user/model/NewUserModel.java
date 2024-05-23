@@ -35,5 +35,5 @@ public class NewUserModel {
     private UserRole role;
 
     // StoreId is used for STORE_USER s only
-    private String storeId;
+    private Long storeId;
 }
