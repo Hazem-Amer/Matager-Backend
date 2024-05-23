@@ -5,6 +5,6 @@ import com.matager.app.category.CategoryModel;
 import java.util.List;
 
 public interface StoreCatSubCategoryService {
-    List<CategoryModel> getCategories(Long storeId);
+    StoreCatSubCategoryModel getCategories(Long storeId);
 
 }

@@ -30,8 +30,8 @@ public class StoreCatSubCategoryController {
                         .timeStamp(LocalDateTime.now().toString())
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
-                        .message("Categories have been retrieved  successfully")
-                        .data(Map.of("category", storeCatSubCategoryService.getCategories(storeId)))
+                        .message("Store Categories have been retrieved successfully")
+                        .data(Map.of("storeCategories", storeCatSubCategoryService.getCategories(storeId)))
                         .build());
 
     }
