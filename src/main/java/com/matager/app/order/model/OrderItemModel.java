@@ -19,11 +19,9 @@ import org.springframework.validation.annotation.Validated;
 public class OrderItemModel {
     private Long itemNo; // ArtikelNr
     private String itemName; // ArtikelName
-    private Double count;
-    private Double price;
-    private Double listPrice;
+    private Double quantity;
+    private Double totalPrice;
+    private Double listPrice; //price per 1
     private Double discount;
-    private Double vat;
-    private String productGroup;
-    private ZeroPriceReason zeroPriceReason; // RechnungDetails.Art, (0: normal), (1: staff), (2: invitations), (3: shrinkage, damaged)
+    private Double tax;
 }

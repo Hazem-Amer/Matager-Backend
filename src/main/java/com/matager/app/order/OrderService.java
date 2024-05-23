@@ -14,12 +14,14 @@ import java.util.List;
 
 public interface OrderService {
 
-    List<Order> syncOrders(User user, SyncOrdersModel ordersModel);
+//    List<Order> syncOrders(User user, SyncOrdersModel ordersModel);
+//
+//    Order saveOrder(User user, OrderModel newOrder);
+//
+//    Order saveOrder(Owner owner, User user, Store store, OrderModel newOrder);
 
-    Order saveOrder(User user, OrderModel newOrder);
+    Order updateOrder(Long orderId,OrderModel orderModel);
 
-    Order saveOrder(Owner owner, User user, Store store, OrderModel newOrder);
-
-    Order updateOrder(Owner owner, User user, Store store, OrderModel orderModel);
+    void deleteOrder(Long orderId);
 
 }

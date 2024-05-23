@@ -51,7 +51,7 @@ public class OrderItem extends BaseEntity {
     @Column(name = "item_name")
     private String itemName;
 
-    @Column(name = "count")
+    @Column(name = "quantity")
     private Double quantity;
 
     @Column(name = "list_price")

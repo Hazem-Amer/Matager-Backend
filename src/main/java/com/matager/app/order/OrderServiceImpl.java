@@ -4,32 +4,20 @@
 
 package com.matager.app.order;
 
-import com.matager.app.Item.Item;
 import com.matager.app.Item.ItemRepository;
-import com.matager.app.order.delivery.DeliveryCustomer;
 import com.matager.app.order.delivery.DeliveryCustomerRepository;
-import com.matager.app.order.delivery.DeliveryOrder;
 import com.matager.app.order.delivery.DeliveryOrderRepository;
-import com.matager.app.order.model.OrderItemModel;
 import com.matager.app.order.model.OrderModel;
-import com.matager.app.order.model.PaymentModel;
-import com.matager.app.order.model.SyncOrdersModel;
 import com.matager.app.order.orderItem.OrderItem;
 import com.matager.app.order.orderItem.OrderItemRepository;
-import com.matager.app.owner.Owner;
-import com.matager.app.payment.Payment;
 import com.matager.app.payment.PaymentRepository;
-import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
-import com.matager.app.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,22 +33,47 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentRepository paymentRepository;
 
     @Override
-    @Transactional
-    public List<Order> syncOrders(User user, SyncOrdersModel ordersModel) {
-        Owner owner = user.getOwner();
-
-        Store store;
-
-        if (ordersModel.getStoreUuid() != null) {
-            store = storeRepository.findByOwnerIdAndUuid(owner.getId(), ordersModel.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found."));
-        } else {
-            if (user.getDefaultStore() == null)
-                throw new RuntimeException("No default store found, please specify store uuid.");
-            store = user.getDefaultStore();
+    public Order updateOrder(Long orderId, OrderModel orderModel) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("order " + orderId + " not found"));
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (Long id : orderModel.getItemsIds()) {
+            OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(() -> new RuntimeException("order " + orderId + " not found"));
+            orderItems.add(orderItem);
         }
+        order.setItems(orderItems);
+        order.setPaymentType(orderModel.getPaymentType());
+        order.setDeliveryMethod(orderModel.getDeliveryMethod());
+        order.setDeliveryStatus(orderModel.getDeliveryStatus());
+        order.setIsPaid(orderModel.getIsPaid());
+        order.setCreatedAt(orderModel.getCreatedAt());
+        order.setDeliveredAt(orderModel.getDeliveredAt());
+        order.setTotal(orderModel.getTotal());
+        return orderRepository.saveAndFlush(order);
+    }
+
+    @Override
+    public void deleteOrder(Long orderId) {
+        orderRepository.deleteById(orderId);
+    }
 
 
-        List<Order> orders = new ArrayList<>();
+//    @Override
+//    @Transactional
+//    public List<Order> syncOrders(User user, SyncOrdersModel ordersModel) {
+//        Owner owner = user.getOwner();
+//
+//        Store store;
+//
+//        if (ordersModel.getStoreUuid() != null) {
+//            store = storeRepository.findByOwnerIdAndUuid(owner.getId(), ordersModel.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found."));
+//        } else {
+//            if (user.getDefaultStore() == null)
+//                throw new RuntimeException("No default store found, please specify store uuid.");
+//            store = user.getDefaultStore();
+//        }
+
+
+//        List<Order> orders = new ArrayList<>();
 
 //        for (OrderModel orderModel : ordersModel.getOrders()) {
 //            if (orderRepository.existsByStoreIdAndInvoiceNo(store.getId(), orderModel.getInvoiceNo())) {
@@ -70,63 +83,63 @@ public class OrderServiceImpl implements OrderService {
 //            }
 //        }
 
+//
+//        return orders;
+//    }
 
-        return orders;
-    }
-
-    @Override
-    @Transactional
-    public Order saveOrder(User user, OrderModel newOrder) {
-        Owner owner = user.getOwner();
-
-        Store store;
-
-        if (newOrder.getStoreUuid() != null) {
-            store = storeRepository.findByOwnerIdAndUuid(owner.getId(), newOrder.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found."));
-        } else {
-            if (user.getDefaultStore() == null)
-                throw new RuntimeException("No default store found, please specify store uuid.");
-            store = user.getDefaultStore();
-        }
+//    @Override
+//    @Transactional
+//    public Order saveOrder(User user, OrderModel newOrder) {
+//        Owner owner = user.getOwner();
+//
+//        Store store;
+//
+//        if (newOrder.getStoreUuid() != null) {
+//            store = storeRepository.findByOwnerIdAndUuid(owner.getId(), newOrder.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found."));
+//        } else {
+//            if (user.getDefaultStore() == null)
+//                throw new RuntimeException("No default store found, please specify store uuid.");
+//            store = user.getDefaultStore();
+//        }
 
 
-        return saveOrder(owner, user, store, newOrder);
-    }
+//        return saveOrder(owner, user, store, newOrder);
+//    }
 
-    @Override
-    @Transactional
-    public Order saveOrder(Owner owner, User user, Store store, OrderModel newOrder) {
-        // User is not used here, but it's passed to the method to be used in the future if needed (e.g. to check if the user has the permission to create orders, monitor who saved the order).
-
-        Order order = new Order();
-        order.setOwner(owner);
-        order.setCreatedAt(newOrder.getCreatedAt());
-        order.setStore(store);
-        order.setIsCancelled(newOrder.getIsCancelled());
-        order.setTotal(newOrder.getTotal());
-
-        order = orderRepository.saveAndFlush(order);
-
-        if (newOrder.getItems() != null)
-            for (OrderItemModel itemModel : newOrder.getItems()) {
-                OrderItem orderItem = new OrderItem();
-                orderItem.setOwner(owner);
-                orderItem.setStore(store);
-                orderItem.setOrder(order);
-                if (itemModel.getItemNo() != null && itemModel.getItemNo() != 0) {
-                    //                orderItem.setItem(itemRepository.findByStoreIdAndItemNo(store.getId(), item.getItemNo()).orElseThrow(() -> new OrderException(newOrder.getInvoiceNo(), "Item with number " + item.getItemNo() + " not found on the system.")));
-                    Optional<Item> optionalItem = itemRepository.findByStoreIdAndItemNo(store.getId(), itemModel.getItemNo());
-                    if (optionalItem.isPresent()) { // Null references are allowed
-                        orderItem.setItem(optionalItem.get());
-                    }
-                }
-                orderItem.setItemNo(itemModel.getItemNo());
-                orderItem.setItemName(itemModel.getItemName());
-//                orderItem.setPrice(itemModel.getPrice());
-                orderItem.setListPrice(itemModel.getListPrice());
-                orderItem.setDiscount(itemModel.getDiscount());
-                orderItemRepository.saveAndFlush(orderItem);
-            }
+//    @Override
+//    @Transactional
+//    public Order saveOrder(Owner owner, User user, Store store, OrderModel newOrder) {
+//        // User is not used here, but it's passed to the method to be used in the future if needed (e.g. to check if the user has the permission to create orders, monitor who saved the order).
+//
+//        Order order = new Order();
+//        order.setOwner(owner);
+//        order.setCreatedAt(newOrder.getCreatedAt());
+//        order.setStore(store);
+//        order.setIsCancelled(newOrder.getIsCancelled());
+//        order.setTotal(newOrder.getTotal());
+//
+//        order = orderRepository.saveAndFlush(order);
+//
+//        if (newOrder.getItems() != null)
+//            for (OrderItemModel itemModel : newOrder.getItems()) {
+//                OrderItem orderItem = new OrderItem();
+//                orderItem.setOwner(owner);
+//                orderItem.setStore(store);
+//                orderItem.setOrder(order);
+//                if (itemModel.getItemNo() != null && itemModel.getItemNo() != 0) {
+//                    //                orderItem.setItem(itemRepository.findByStoreIdAndItemNo(store.getId(), item.getItemNo()).orElseThrow(() -> new OrderException(newOrder.getInvoiceNo(), "Item with number " + item.getItemNo() + " not found on the system.")));
+//                    Optional<Item> optionalItem = itemRepository.findByStoreIdAndItemNo(store.getId(), itemModel.getItemNo());
+//                    if (optionalItem.isPresent()) { // Null references are allowed
+//                        orderItem.setItem(optionalItem.get());
+//                    }
+//                }
+//                orderItem.setItemNo(itemModel.getItemNo());
+//                orderItem.setItemName(itemModel.getItemName());
+////                orderItem.setPrice(itemModel.getPrice());
+//                orderItem.setListPrice(itemModel.getListPrice());
+//                orderItem.setDiscount(itemModel.getDiscount());
+//                orderItemRepository.saveAndFlush(orderItem);
+//            }
 
 //
 //        if (order.getLevel().equals(Level.DELIVERY)) {
@@ -146,26 +159,26 @@ public class OrderServiceImpl implements OrderService {
 //            deliveryOrder = deliveryOrderRepository.saveAndFlush(deliveryOrder);
 //        }
 
-        if (newOrder.getPayments() != null)
-            for (PaymentModel p : newOrder.getPayments()) {
-                Payment payment = new Payment();
-                payment.setOwner(owner);
-                payment.setStore(store);
-                payment.setOrder(order);
-                payment.setPaymentType(p.getType());
-                payment.setName(p.getName());
-                payment.setAmount(p.getAmount());
-                paymentRepository.saveAndFlush(payment);
-            }
+//        if (newOrder.getPayments() != null)
+//            for (PaymentModel p : newOrder.getPayments()) {
+//                Payment payment = new Payment();
+//                payment.setOwner(owner);
+//                payment.setStore(store);
+//                payment.setOrder(order);
+//                payment.setPaymentType(p.getType());
+//                payment.setName(p.getName());
+//                payment.setAmount(p.getAmount());
+//                paymentRepository.saveAndFlush(payment);
+//            }
+//
+//
+//        return order;
+//    }
 
-
-        return order;
-    }
-
-    @Override
-    public Order updateOrder(Owner owner, User user, Store store, OrderModel orderModel) {
-        return null;
-    }
+//    @Override
+//    public Order updateOrder(Owner owner, User user, Store store, OrderModel orderModel) {
+//        return null;
+//    }
 
 //    @Transactional
 //    @Override

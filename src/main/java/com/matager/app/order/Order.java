@@ -11,9 +11,11 @@ import com.matager.app.order.delivery.DeliveryOrder;
 import com.matager.app.order.orderItem.OrderItem;
 import com.matager.app.owner.Owner;
 import com.matager.app.payment.Payment;
+import com.matager.app.payment.PaymentType;
 import com.matager.app.store.Store;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,9 +53,25 @@ public class Order extends BaseEntity {
     @JsonIgnore
     private List<OrderItem> items;
 
+
 //    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JsonIgnore
 //    private List<Payment> payments;
+
+    @Column(name = "payment_type")
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
+
+    @Column(name = "delivery_method")
+    @Enumerated(EnumType.STRING)
+    private DeliveryMethod deliveryMethod;
+
+    @Column(name = "delivery_status")
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus;
+
+    @Column(name = "is_paid")
+    private Boolean isPaid;
 
     @Column(name = "order_no")
     private Long orderNo;
@@ -61,11 +79,12 @@ public class Order extends BaseEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "is_cancelled")
-    private Boolean isCancelled;
+    @Column(name = "delivered_at")
+    private LocalDateTime deliveredAt;
 
-    @Column(name = "sub_total")
-    private Double subTotal; // price of all orderItems without delivery,discount and Tax
+//    @Column(name = "is_cancelled")
+//    private Boolean isCancelled;
+//
 
     @Column(name = "total")
     private Double total;

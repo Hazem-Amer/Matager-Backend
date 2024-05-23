@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "'customer'")
+@Table(name = "customer")
 @JsonIgnoreProperties({"id", "owner", "store"})
 public class Customer extends BaseEntity {
     @Column(name = "name")
