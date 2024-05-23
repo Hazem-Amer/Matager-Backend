@@ -57,6 +57,8 @@ public class SecurityConfig {
                                         .requestMatchers("/v1/auth/sign_up").permitAll()
                                         .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/auth/login")).permitAll()
                                         .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/auth/sign_up")).permitAll()
+                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/products")).permitAll()
+                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/category")).permitAll()
 //                                .requestMatchers("/v1/store/auth/[A-Za-z0-9]+/sign_up").permitAll()
                                         .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
                 ).oauth2ResourceServer().jwt()

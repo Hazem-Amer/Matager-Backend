@@ -21,10 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     private final SubCategoryRepository subCategoryRepository;
     private final StoreRepository storeRepository;
     private final FileUploadService fileUploadService;
-    private final ModelMapper modelMapper = new ModelMapper();
+//    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public Item getItem(Long itemId) {
@@ -52,78 +50,94 @@ public class ItemServiceImpl implements ItemService {
     }
 
 
-    @Override
-    public Page<Item> getItemsWithFiler(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Item> itemPage;
-        boolean isNameProvided = name != null && !name.isEmpty();
-
-        if (isNameProvided && categoryId != null && subCategoryId != null && isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, name, categoryId, subCategoryId, isVisible, pageable);
-        } else if (isNameProvided && categoryId != null && subCategoryId != null) {
-            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryId(storeId, name, categoryId, subCategoryId, pageable);
-        } else if (isNameProvided && categoryId != null && isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndIsVisible(storeId, name, categoryId, isVisible, pageable);
-        } else if (isNameProvided && subCategoryId != null && isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryIdAndIsVisible(storeId, name, subCategoryId, isVisible, pageable);
-        } else if (categoryId != null && subCategoryId != null && isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, categoryId, subCategoryId, isVisible, pageable);
-        } else if (isNameProvided && categoryId != null) {
-            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryId(storeId, name, categoryId, pageable);
-        } else if (isNameProvided && subCategoryId != null) {
-            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryId(storeId, name, subCategoryId, pageable);
-        } else if (categoryId != null && subCategoryId != null) {
-            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryId(storeId, categoryId, subCategoryId, pageable);
-        } else if (isNameProvided && isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndItemNameAndIsVisible(storeId, name, isVisible, pageable);
-        } else if (categoryId != null && isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndCategoryIdAndIsVisible(storeId, categoryId, isVisible, pageable);
-        } else if (subCategoryId != null && isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndSubcategoryIdAndIsVisible(storeId, subCategoryId, isVisible, pageable);
-        } else if (isNameProvided) {
-            itemPage = itemRepository.findByStoreIdAndItemName(storeId, name, pageable);
-        } else if (categoryId != null) {
-            itemPage = itemRepository.findByStoreIdAndCategoryId(storeId, categoryId, pageable);
-        } else if (subCategoryId != null) {
-            itemPage = itemRepository.findByStoreIdAndSubcategoryId(storeId, subCategoryId, pageable);
-        } else if (isVisible != null) {
-            itemPage = itemRepository.findByStoreIdAndIsVisible(storeId, isVisible, pageable);
-        } else {
-            itemPage = itemRepository.findByStoreId(storeId, pageable);
-        }
-
-        return itemPage;
+//    @Override
+//    public Page<Item> getItemsWithFiler(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<Item> itemPage;
+//        boolean isNameProvided = name != null && !name.isEmpty();
 //
-//        List<Item> items = new ArrayList<>(itemPage.getContent());
-//        List<ItemModel> itemModels = new ArrayList<>();
-//        for(Item item :items)
-//            itemModels.add(modelMapper.map(item,ItemModel.class));
+//        if (isNameProvided && categoryId != null && subCategoryId != null && isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, name, categoryId, subCategoryId, isVisible, pageable);
+//        } else if (isNameProvided && categoryId != null && subCategoryId != null) {
+//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryId(storeId, name, categoryId, subCategoryId, pageable);
+//        } else if (isNameProvided && categoryId != null && isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndIsVisible(storeId, name, categoryId, isVisible, pageable);
+//        } else if (isNameProvided && subCategoryId != null && isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryIdAndIsVisible(storeId, name, subCategoryId, isVisible, pageable);
+//        } else if (categoryId != null && subCategoryId != null && isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, categoryId, subCategoryId, isVisible, pageable);
+//        } else if (isNameProvided && categoryId != null) {
+//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryId(storeId, name, categoryId, pageable);
+//        } else if (isNameProvided && subCategoryId != null) {
+//            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryId(storeId, name, subCategoryId, pageable);
+//        } else if (categoryId != null && subCategoryId != null) {
+//            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryId(storeId, categoryId, subCategoryId, pageable);
+//        } else if (isNameProvided && isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndItemNameAndIsVisible(storeId, name, isVisible, pageable);
+//        } else if (categoryId != null && isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndCategoryIdAndIsVisible(storeId, categoryId, isVisible, pageable);
+//        } else if (subCategoryId != null && isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndSubcategoryIdAndIsVisible(storeId, subCategoryId, isVisible, pageable);
+//        } else if (isNameProvided) {
+//            itemPage = itemRepository.findByStoreIdAndItemName(storeId, name, pageable);
+//        } else if (categoryId != null) {
+//            itemPage = itemRepository.findByStoreIdAndCategoryId(storeId, categoryId, pageable);
+//        } else if (subCategoryId != null) {
+//            itemPage = itemRepository.findByStoreIdAndSubcategoryId(storeId, subCategoryId, pageable);
+//        } else if (isVisible != null) {
+//            itemPage = itemRepository.findByStoreIdAndIsVisible(storeId, isVisible, pageable);
+//        } else {
+//            itemPage = itemRepository.findByStoreId(storeId, pageable);
+//        }
+//
+//        return itemPage;
+//
+//    }
 
+    public Page<Item> getItemsFilteredAndSorted(Long storeId, String itemName, Long categoryId, Long subCategoryId, Boolean isVisible, String sort, int page, int size) {
+        Pageable pageable;
+        if (sort.contains(";")) {
+            String[] sortParts = sort.split(";");
+            String sortField = sortParts[0];
+            String sortDirection = sortParts[1];
+            Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort));
+        }
+        Specification<Item> spec = Specification.where(ItemSpecification.storeIdEquals(storeId))
+                .and(ItemSpecification.itemNameContains(itemName))
+                .and(ItemSpecification.categoryIdEquals(categoryId))
+                .and(ItemSpecification.subCategoryIdEquals(subCategoryId))
+                .and(ItemSpecification.isVisibleEquals(isVisible));
+
+        return itemRepository.findAll(spec, pageable);
     }
-
 
     @Override
     public Item saveItem(Owner owner, User user, Store store, ItemModel newItem, List<MultipartFile> imageMultipartFiles) {
         Item item = new Item();
-        Category category = categoryRepository.findById(newItem.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found."));
-        ;
-        SubCategory subCategory = subCategoryRepository.findById(newItem.getSubcategoryId()).orElseThrow(() -> new RuntimeException("Subcategory not found."));
-        ;
+        Category category = categoryRepository.findById(newItem.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
         item.setOwner(owner);
         if (newItem.getStoreUuid() != null) {
-            store = storeRepository.findByOwnerIdAndUuid(owner.getId(), newItem.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found."));
+            store = storeRepository.findByOwnerIdAndUuid(owner.getId(), newItem.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found"));
         } else {
             if (user.getDefaultStore() == null)
-                throw new RuntimeException("No default store found, please specify store uuid.");
+                throw new RuntimeException("No default store found, please specify store uuid");
             store = user.getDefaultStore();
         }
+
+        List<Long> categorySubCategoryIds = subCategoryRepository.findCategorySubCategoryIds(store.getId(), category.getId());
+        if (categorySubCategoryIds.contains(newItem.getSubcategoryId())) {
+            SubCategory subCategory = subCategoryRepository.findById(newItem.getSubcategoryId()).orElseThrow(() -> new RuntimeException("SubCategory not found"));
+            item.setSubcategory(subCategory);
+        } else throw new RuntimeException("SubCategory: " + newItem.getSubcategoryId() + " is not found in this Category");
         item.setStore(store);
         item.setItemNo(newItem.getItemNo());
         item.setItemName(newItem.getName());
         item.setSale(newItem.isSale());
         item.setListPrice(newItem.getListPrice());
         item.setCategory(category);
-        item.setSubcategory(subCategory);
         item.setMaximumOrderQuantity(newItem.getMaximumOrderQuantity());
         item.setMinimumOrderQuantity(newItem.getMinimumOrderQuantity());
         item.setQuantity(newItem.getQuantity());
@@ -172,9 +186,6 @@ public class ItemServiceImpl implements ItemService {
         if (itemModel.getDescription() != null) item.setDescription(itemModel.getDescription());
 
         if (itemModel.getIsVisible() != null) item.setIsVisible(itemModel.getIsVisible());
-        if (itemModel.getMainImage() != null) {
-
-        }
         if (itemModel.getCategoryId() != null) {
             Category category = categoryRepository.findById(itemModel.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found: " + itemModel.getCategoryId()));

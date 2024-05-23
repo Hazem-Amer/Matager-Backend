@@ -36,7 +36,7 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
     public SubCategory addSubCategory(Owner owner, User user, Store store, MultipartFile iconFile, SubCategoryModel newSubCategory) {
         SubCategory subCategory = new SubCategory();
         subCategory.setOwner(owner);
-        subCategory.setStore(storeRepository.findById(newSubCategory.getStoreId()).orElseThrow(() -> new RuntimeException("Store not fount")));
+        subCategory.setStore(storeRepository.findById(newSubCategory.getStoreId()).orElseThrow(() -> new RuntimeException("Store not found")));
         subCategory.setName(newSubCategory.getName());
         subCategory.setIsVisible(newSubCategory.getIsVisible());
         String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, iconFile);
@@ -47,7 +47,7 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
 
     @Override
     public SubCategory updateSubCategory(Owner owner, Store store, Long subCategoryId, MultipartFile newIconFile, SubCategoryModel newSubCategory) {
-        SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("Subcategory not fount"));
+        SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("Subcategory not found"));
 
         if (newSubCategory.getName() != null) {
             subCategory.setName(newSubCategory.getName());

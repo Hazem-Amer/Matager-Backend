@@ -16,7 +16,7 @@ public interface ItemService {
     Item getItem(Long itemId);
 
 
-    Page<Item> getItemsWithFiler(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, int page, int size);
+    Page<Item> getItemsFilteredAndSorted(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, String sort, int page, int size);
 
     Item saveItem(Owner owner, User user, Store store, ItemModel newItem, List<MultipartFile> imageMultipartFile);
 

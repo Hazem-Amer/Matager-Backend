@@ -24,6 +24,7 @@ public class CategoryModel {
     private Boolean isVisible;
     private String imageUrl;
     private String iconUrl;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Long> subCategoryIds;
     private List<SubCategory> subCategories;
 }

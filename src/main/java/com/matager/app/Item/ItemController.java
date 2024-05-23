@@ -60,14 +60,14 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<ResponseModel> getItems(@RequestParam Long storeId, @RequestParam(name = "search",required = false) String name,
                                                   @RequestParam(required = false) Long categoryId, @RequestParam(required = false) Long subCategoryId,
-                                                  @RequestParam(required = false) Boolean isVisible, @RequestParam int page, @RequestParam int size) {
+                                                  @RequestParam(required = false) Boolean isVisible,@RequestParam(required = false) String sort ,@RequestParam int page, @RequestParam int size) {
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
                         .timeStamp(LocalDateTime.now().toString())
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("Items of this store have been retrieved successfully")
-                        .data(Map.of("items", itemService.getItemsWithFiler(storeId, name, categoryId, subCategoryId, isVisible, page, size)))
+                        .data(Map.of("items", itemService.getItemsFilteredAndSorted(storeId, name, categoryId, subCategoryId, isVisible, sort,page, size)))
                         .build());
     }
 
