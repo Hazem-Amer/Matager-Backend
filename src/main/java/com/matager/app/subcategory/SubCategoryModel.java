@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 public class SubCategoryModel {
     private Long storeId;
     private Long subCategoryId;
+    private Long categoryId;
     private String name;
     private Boolean isVisible;
     private String subCategoryIconUrl;

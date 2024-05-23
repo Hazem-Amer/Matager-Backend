@@ -140,11 +140,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
         // TODO: add limit 5 later abdullah
     List<ItemSalePro> findTop5ItemsSales(Long ownerId, LocalDateTime fromDate, LocalDateTime toDate, Long storeId, List<String> productGroups);
 
-    @Query(value = "SELECT oi.productGroup as name, SUM(oi.price * oi.count) as totalAmount " +
-            "FROM OrderItem oi " +
-            "WHERE oi.productGroup IN :productGroups AND oi.order.createdAt BETWEEN :fromDate AND :toDate AND oi.owner.id = :ownerId AND oi.order.isCancelled = false " +
-            "GROUP BY oi.productGroup")
-    List<NameAmountPro> findProductGroupsSales(LocalDateTime fromDate, LocalDateTime toDate, List<String> productGroups, Long ownerId);
 
 
 //    @Query(value = "SELECT oi.item.category as name, SUM(oi.price * oi.count) as totalAmount " +

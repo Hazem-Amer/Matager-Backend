@@ -46,11 +46,11 @@ public class OrderItem extends BaseEntity {
 
     // if item is deleted these props are IMPORTANT
     @Column(name = "item_no")
-    private Long itemNo; // ArtikelNr
+    private Long itemNo;
 
     @Column(name = "item_name")
-    private String itemName; // ArtikelName
-    // --------------------------------------------
+    private String itemName;
+
     @Column(name = "price")
     private Double price;
 
@@ -61,16 +61,9 @@ public class OrderItem extends BaseEntity {
     private Double discount;
 
     @Column(name = "count")
-    private Double count;
+    private Double quantity;
 
-    @Column(name = "vat")
-    private Double vat;
 
-    @Column(name = "product_group")
-    private String productGroup;
 
-    @Column(name = "zero_price_reason")
-    @Enumerated(EnumType.STRING)
-    private ZeroPriceReason zeroPriceReason; // RechnungDetails.Art, (0: normal), (1: staff), (2: invitations), (3: shrinkage, damaged)
 
 }

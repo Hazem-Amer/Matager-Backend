@@ -48,12 +48,9 @@ public class DeliveryOrder extends BaseEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_customer_id")
-    private DeliveryCustomer deliveryCustomer;
-
-    @Column(name = "invoice_no")
-    private Long invoiceNo; // RechnungNr
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "delivery_customer_id")
+//    private DeliveryCustomer deliveryCustomer;
 
     @Column(name = "order_no")
     private Long orderNo; // AuftargNr

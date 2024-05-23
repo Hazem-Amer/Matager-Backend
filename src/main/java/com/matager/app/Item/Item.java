@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "owner", "store"})
+@JsonIgnoreProperties({"owner", "store"})
 @Table(name = "item",
         indexes = {
                 @Index(name = "idx_item_store_id", columnList = "store_id"),
