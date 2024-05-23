@@ -52,7 +52,7 @@ server:
   error:
     include-message: always
     path: /error
-  port: 8080
+  port: 8888
 #    whitelabel:
 #      enabled: false
 

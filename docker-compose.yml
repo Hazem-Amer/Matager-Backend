@@ -5,7 +5,7 @@ services:
     container_name: matager_backend
     build: .
     ports:
-      - "5009:8080"
+      - "5009:8888"
     environment:
       SPRING_PROFILES_ACTIVE: prod
       DATABASE_URL: jdbc:mysql://matager_backend_mysql:3306/matager?creatDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
