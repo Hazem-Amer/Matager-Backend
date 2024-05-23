@@ -122,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
                 }
                 orderItem.setItemNo(itemModel.getItemNo());
                 orderItem.setItemName(itemModel.getItemName());
-                orderItem.setPrice(itemModel.getPrice());
+//                orderItem.setPrice(itemModel.getPrice());
                 orderItem.setListPrice(itemModel.getListPrice());
                 orderItem.setDiscount(itemModel.getDiscount());
                 orderItemRepository.saveAndFlush(orderItem);

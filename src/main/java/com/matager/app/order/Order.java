@@ -42,13 +42,14 @@ public class Order extends BaseEntity {
     @JsonIgnore
     private Store store;
 
+    @ManyToOne(fetch = FetchType.LAZY) // Many orders belong to one customer
+    @JoinColumn(name = "customer_id")
+    @JsonIgnore
+    private Customer customer;
+
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<OrderItem> items;
-
-    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private DeliveryOrder deliveryOrder;
 
 //    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JsonIgnore

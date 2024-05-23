@@ -24,5 +24,10 @@ public interface SubCategoryRepository extends JpaRepository<SubCategory, Long> 
                            @Param("subCategoryId") Long subCategoryId,
                            @Param("ownerId") Long ownerId,
                            @Param("storeId") Long storeId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE sub_category SET category_id = null WHERE category_id = :categoryId ", nativeQuery = true)
+    int removeCategoryIdById(@Param("categoryId") Long categoryId);
 }
 

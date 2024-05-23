@@ -16,5 +16,5 @@ public interface CategoryService {
 
     CategoryModel updateCategory(Owner owner, Store store, MultipartFile imageFile, MultipartFile iconFile, Long categoryId, CategoryModel categoryModel);
 
-    void deleteCategory(Owner owner, Store store, Long categoryId);
+    void deleteCategory(Long categoryId);
 }

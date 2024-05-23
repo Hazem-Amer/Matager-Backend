@@ -8,6 +8,7 @@ import com.matager.app.subcategory.SubCategory;
 import com.matager.app.subcategory.SubCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryModel updateCategory(Owner owner, Store store, MultipartFile imageFile, MultipartFile iconFile, Long categoryId, CategoryModel newCategory) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found with ID: " + newCategory.getCategoryId()));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
         CategoryModel categoryModel = category.toModel();
         if (newCategory.getName() != null) {
             category.setName(newCategory.getName());
@@ -94,19 +95,6 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
 
-//        if (newCategory.getSubCategoryIds() != null && !newCategory.getSubCategoryIds().isEmpty()) {
-//            for (Long subCategoryId : newCategory.getSubCategoryIds()) {
-//                SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(() -> new RuntimeException("SubCategory with id : " +subCategoryId+ " not found"));
-//                if(subCategory.getStore().getId()==category.getStore().getId())
-//                    subCategoryRepository.updateCategoryId(category.getId(), subCategoryId,  category.getOwner().getId(),category.getStore().getId());
-//                else
-//                    throw new RuntimeException("SubCategory with id : " +subCategoryId+ " is not found in the same store of the category: "+category.getId());
-//
-//            }
-//            List<Long> categorySubcategoryIds = subCategoryRepository.findCategorySubCategoryIds(category.getStore().getId(), category.getId());
-//            if(categorySubcategoryIds !=null)
-//                categoryModel.setSubCategoryIds(categorySubcategoryIds);
-//        }
         category = categoryRepository.saveAndFlush(category);
         assignSubCategoryIdsToCategory(category, newCategory, categoryModel);
         subCategoryRepository.flush();
@@ -129,9 +117,9 @@ public class CategoryServiceImpl implements CategoryService {
             categoryModel.setSubCategories(subCategories);
         }
     }
-
     @Override
-    public void deleteCategory(Owner owner, Store store, Long categoryId) {
+    public void deleteCategory(Long categoryId) {
+        subCategoryRepository.removeCategoryIdById(categoryId);
         categoryRepository.deleteById(categoryId);
         categoryRepository.flush();
     }

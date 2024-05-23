@@ -93,10 +93,8 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<ResponseModel> deleteCategory(@PathVariable Long categoryId) {
         User user = authenticationFacade.getAuthenticatedUser();
-        Store store = user.getDefaultStore();
-        Owner owner = user.getOwner();
         log.info("user:" + user);
-        categoryService.deleteCategory(owner, store, categoryId);
+        categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
                         .timeStamp(LocalDateTime.now().toString())

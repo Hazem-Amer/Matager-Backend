@@ -51,17 +51,19 @@ public class OrderItem extends BaseEntity {
     @Column(name = "item_name")
     private String itemName;
 
-    @Column(name = "price")
-    private Double price;
+    @Column(name = "count")
+    private Double quantity;
 
     @Column(name = "list_price")
     private Double listPrice; // Price without discount
 
+    @Column(name = "price")
+    private Double totalPrice;
+
+
     @Column(name = "discount")
     private Double discount;
 
-    @Column(name = "count")
-    private Double quantity;
 
 
 
