@@ -56,8 +56,8 @@ public class CartController {
     @PatchMapping("/add/{itemId}")
     public ResponseEntity<ResponseModel> increaseItemQuantity(@PathVariable Long storeId,
                                                               @PathVariable Long itemId,
-                                                              @RequestParam int quantity) {
-        cartService.updateCartItemQuantity(storeId, itemId, quantity);
+                                                              @RequestBody Map<String, Integer> quantity) {
+        cartService.updateCartItemQuantity(storeId, itemId, quantity.get("quantity"));
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
                         .timeStamp(LocalDateTime.now().toString())

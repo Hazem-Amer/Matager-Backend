@@ -74,12 +74,10 @@ public class CartServiceImpl implements CartService {
     public void removeItemFromCart(Long storeId, Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
         Cart cart = getUserCartOrCreateNew(storeId);
-        Optional<CartItem> optionalCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
-        if (optionalCartItem.isPresent()) {
-            cartItemRepository.delete(optionalCartItem.get());
-        } else {
-            throw new RuntimeException("Item not found in cart");
-        }
+        CartItem cartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId())
+                .orElseThrow(() -> new RuntimeException("Item not found in cart"));
+        cartItemRepository.delete(cartItem);
+
     }
 
     @Override
@@ -87,14 +85,12 @@ public class CartServiceImpl implements CartService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
         Cart cart = getUserCartOrCreateNew(storeId);
         CartItem cartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId())
-                .orElseThrow(() -> new RuntimeException("CartItem not found"));
-        int newQuantity = cartItem.getQuantity() + quantity;
-        if (newQuantity > 0) {
-            cartItem.setQuantity(newQuantity);
-            cartItemRepository.save(cartItem);
-        } else {
+                .orElseThrow(() -> new RuntimeException("No Items in the cart"));
+        if(quantity >0) {
+            cartItem.setQuantity(quantity);
+            cartItemRepository.saveAndFlush(cartItem);
+        }else
             cartItemRepository.delete(cartItem);
-        }
     }
 
 
