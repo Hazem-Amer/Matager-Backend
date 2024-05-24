@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface CategoryService {
     List<CategoryModel> getCategories(Long storeId);
+    List<Category> getStoreCategories(Long storeId);
 
     CategoryModel getCategory(Long categoryId);
 

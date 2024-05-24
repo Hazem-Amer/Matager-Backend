@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"owner", "store","category"})
+@JsonIgnoreProperties({"owner", "store", "category"})
 @Table(name = "sub_category")
 public class SubCategory extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,5 +40,5 @@ public class SubCategory extends BaseEntity {
     private Boolean isVisible;
 
     @Column(name = "icon")
-    private String categoryIconUrl;
+    private String iconUrl;
 }

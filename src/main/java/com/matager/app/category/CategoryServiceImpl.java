@@ -43,6 +43,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> getStoreCategories(Long storeId) {
+        return categoryRepository.findAllCategoryByStoreId(storeId)
+                .orElseThrow(() -> new RuntimeException("Store: " + storeId + " has no categories"));
+    }
+
+    @Override
     public CategoryModel getCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found with ID: " + categoryId));
         Store store = storeRepository.findById(category.getStore().getId()).orElseThrow(() -> new RuntimeException("Store not found"));

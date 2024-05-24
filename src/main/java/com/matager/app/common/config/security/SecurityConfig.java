@@ -55,12 +55,13 @@ public class SecurityConfig {
                                 auth
                                         .requestMatchers("/v1/auth/login").permitAll()
                                         .requestMatchers("/v1/auth/sign_up").permitAll()
-                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/auth/login")).permitAll()
-                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/auth/sign_up")).permitAll()
-                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/products")).permitAll()
-                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/category")).permitAll()
-                                        .requestMatchers(RegexRequestMatcher.regexMatcher("/v1/store/[A-Za-z0-9]+/cart")).permitAll()
-//                                .requestMatchers("/v1/store/auth/[A-Za-z0-9]+/sign_up").permitAll()
+                                        .requestMatchers("/v1/store/{storeId}/auth/login").permitAll()
+                                        .requestMatchers("/v1/store/{storeId}/auth/sign_up").permitAll()
+                                        .requestMatchers("/v1/store/{storeId}/products").permitAll()
+                                        .requestMatchers("/v1/store/{storeId}/products/{productId}").permitAll()
+                                        .requestMatchers("/v1/store/{storeId}/category").permitAll()
+                                        // Cart is not allowed for non-users now
+//                                        .requestMatchers("/v1/store/{storeId}/cart").permitAll()
                                         .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
                 ).oauth2ResourceServer().jwt()
                 .decoder(jwtDecoder())

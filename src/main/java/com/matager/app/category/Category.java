@@ -1,6 +1,8 @@
 package com.matager.app.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.matager.app.Item.Item;
 import com.matager.app.ItemImage.ItemImage;
 import com.matager.app.common.domain.BaseEntity;
 import com.matager.app.owner.Owner;
@@ -29,6 +31,10 @@ public class Category extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @OneToMany(mappedBy = "category",  fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<SubCategory> subCategories;
 
     @Column(name = "name", nullable = false)
     private String name;

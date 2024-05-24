@@ -25,6 +25,38 @@ public class CategoryController {
     private final AuthenticationFacade authenticationFacade;
     private final CategoryService categoryService;
 
+    @GetMapping
+    public ResponseEntity<ResponseModel> getCategories(@RequestParam(value = "storeId", required = true) Long storeId) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Categories have been retrieved  successfully")
+                        .data(Map.of("category", categoryService.getCategories(storeId)))
+                        .build());
+
+    }
+
+
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<ResponseModel> getCategory(@PathVariable Long categoryId) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        log.info("user:" + user);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This category has been retrieved successfully")
+                        .data(Map.of("category", categoryService.getCategory(categoryId)))
+                        .build()
+        );
+    }
+
+
     @PostMapping
     public ResponseEntity<ResponseModel> addCategory(@RequestPart(required = false) MultipartFile image, @RequestPart(required = false) MultipartFile icon, @RequestPart("data") @Valid CategoryModel newCategory) {
         User user = authenticationFacade.getAuthenticatedUser();
@@ -42,35 +74,6 @@ public class CategoryController {
 
     }
 
-    @GetMapping("/{categoryId}")
-    public ResponseEntity<ResponseModel> getCategory(@PathVariable Long categoryId) {
-        User user = authenticationFacade.getAuthenticatedUser();
-        log.info("user:" + user);
-        return ResponseEntity.ok().body(
-                ResponseModel.builder()
-                        .timeStamp(LocalDateTime.now().toString())
-                        .status(HttpStatus.OK)
-                        .statusCode(HttpStatus.OK.value())
-                        .message("This category has been retrieved successfully")
-                        .data(Map.of("category", categoryService.getCategory(categoryId)))
-                        .build()
-        );
-    }
-
-    @GetMapping
-    public ResponseEntity<ResponseModel> getCategories(@RequestParam(value = "storeId", required = true) Long storeId) {
-        User user = authenticationFacade.getAuthenticatedUser();
-        log.info("user:" + user);
-        return ResponseEntity.ok().body(
-                ResponseModel.builder()
-                        .timeStamp(LocalDateTime.now().toString())
-                        .status(HttpStatus.OK)
-                        .statusCode(HttpStatus.OK.value())
-                        .message("Categories have been retrieved  successfully")
-                        .data(Map.of("category", categoryService.getCategories(storeId)))
-                        .build());
-
-    }
 
     @PatchMapping("/{categoryId}")
     public ResponseEntity<ResponseModel> updateCategory(@RequestPart(required = false) MultipartFile image, @RequestPart(required = false) MultipartFile icon, @PathVariable Long categoryId, @RequestPart("data") @Valid CategoryModel newCategory) {

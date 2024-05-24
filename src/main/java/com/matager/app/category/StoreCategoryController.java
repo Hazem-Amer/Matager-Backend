@@ -1,9 +1,7 @@
-package com.matager.app.StoreCatSubCategory;
+package com.matager.app.category;
 
-import com.matager.app.Item.ItemService;
-import com.matager.app.auth.AuthenticationFacade;
+import com.matager.app.category.CategoryService;
 import com.matager.app.common.helper.res_model.ResponseModel;
-import com.matager.app.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,21 +15,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-public class StoreCatSubCategoryController {
-    private final AuthenticationFacade authenticationFacade;
-    private final StoreCatSubCategoryService storeCatSubCategoryService;
+public class StoreCategoryController {
+
+    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<ResponseModel> getCategories(@PathVariable Long storeId) {
-        User user = authenticationFacade.getAuthenticatedUser();
-        log.info("user:" + user);
+
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
                         .timeStamp(LocalDateTime.now().toString())
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("Store Categories have been retrieved successfully")
-                        .data(Map.of("storeCategories", storeCatSubCategoryService.getCategories(storeId)))
+                        .data(Map.of("categories", categoryService.getCategories(storeId)))
                         .build());
 
     }
