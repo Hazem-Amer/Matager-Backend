@@ -4,6 +4,7 @@
 
 package com.matager.app.order;
 
+import com.matager.app.cart.Cart;
 import com.matager.app.order.model.OrderModel;
 import com.matager.app.order.model.SyncOrdersModel;
 import com.matager.app.owner.Owner;
@@ -18,7 +19,7 @@ public interface OrderService {
 //
 //    Order saveOrder(User user, OrderModel newOrder);
 //
-//    Order saveOrder(Owner owner, User user, Store store, OrderModel newOrder);
+    Order saveOrder(Owner owner, User user, Store store, Cart cart);
 
     Order updateOrder(Long orderId,OrderModel orderModel);
 

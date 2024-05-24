@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
         item.setDescription(newItem.getDescription());
         item.setQuantity(newItem.getQuantity());
         item.setIsVisible(newItem.getIsVisible());
-
+        item.setIsInWishList(false);
         item = itemRepository.saveAndFlush(item);
 
         saveItemImage(newItem, imageMultipartFiles, item);

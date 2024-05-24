@@ -1,9 +1,9 @@
-package com.matager.app.cart.cart_item;
+package com.matager.app.wishlist.wishlist_item;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.matager.app.cart.Cart;
 import com.matager.app.Item.Item;
 import com.matager.app.common.domain.BaseEntity;
+import com.matager.app.wishlist.WishList;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,13 +15,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "cart_item")
-@JsonIgnoreProperties({"cart"})
-public class CartItem extends BaseEntity {
-
+@Table(name = "wish_list_item")
+@JsonIgnoreProperties({"wishList"})
+public class WishListItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    @JoinColumn(name = "wish_list_id")
+    private WishList wishList;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
@@ -50,6 +49,4 @@ public class CartItem extends BaseEntity {
     @Column(name = "list_price")
     private Double listPrice;
 
-    @Column(name = "quantity")
-    private Double quantity;
 }

@@ -4,14 +4,23 @@
 
 package com.matager.app.order;
 
+import com.matager.app.Item.Item;
 import com.matager.app.Item.ItemRepository;
+import com.matager.app.cart.Cart;
+import com.matager.app.cart.cart_item.CartItem;
+import com.matager.app.order.customer.Customer;
+import com.matager.app.order.customer.CustomerRepository;
 import com.matager.app.order.delivery.DeliveryCustomerRepository;
 import com.matager.app.order.delivery.DeliveryOrderRepository;
 import com.matager.app.order.model.OrderModel;
 import com.matager.app.order.orderItem.OrderItem;
 import com.matager.app.order.orderItem.OrderItemRepository;
+import com.matager.app.owner.Owner;
 import com.matager.app.payment.PaymentRepository;
+import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
+import com.matager.app.user.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,11 +35,9 @@ public class OrderServiceImpl implements OrderService {
 
     private final StoreRepository storeRepository;
     private final ItemRepository itemRepository;
-    private final DeliveryCustomerRepository deliveryCustomerRepository;
     private final OrderRepository orderRepository;
-    private final DeliveryOrderRepository deliveryOrderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final PaymentRepository paymentRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public Order updateOrder(Long orderId, OrderModel orderModel) {
@@ -106,74 +113,34 @@ public class OrderServiceImpl implements OrderService {
 //        return saveOrder(owner, user, store, newOrder);
 //    }
 
-//    @Override
-//    @Transactional
-//    public Order saveOrder(Owner owner, User user, Store store, OrderModel newOrder) {
+    @Override
+    @Transactional
+    public Order saveOrder(Owner owner, User user, Store store, Cart cart) {
 //        // User is not used here, but it's passed to the method to be used in the future if needed (e.g. to check if the user has the permission to create orders, monitor who saved the order).
-//
 //        Order order = new Order();
+//        List<OrderItem> orderItems = new ArrayList<>();
 //        order.setOwner(owner);
-//        order.setCreatedAt(newOrder.getCreatedAt());
 //        order.setStore(store);
-//        order.setIsCancelled(newOrder.getIsCancelled());
-//        order.setTotal(newOrder.getTotal());
+//        order = orderRepository.saveAndFlush(order);
+//        if (cart.getCartItems() != null) {
+//            for (CartItem cartItem : cart.getCartItems()) {
+//                Item item = cartItem.getItem();
+//                orderItems.add(new OrderItem(owner, store, order, item, item.getItemNo(), item.getItemName(), cartItem.getQuantity(), item.getListPrice(), 0d, 0d));
+//            }
+//            //for testing only
+//            Customer customer = new Customer();
+//            customer.setName(user.getName());
+//            customer.setEmail(user.getEmail());
+//            customerRepository.saveAndFlush(customer);
+//            order.setDeliveryStatus(DeliveryStatus.PENDING);
+//            order.setCustomer(customer);
+//            order.setItems(orderItemRepository.saveAllAndFlush(orderItems));
+//        }
 //
 //        order = orderRepository.saveAndFlush(order);
-//
-//        if (newOrder.getItems() != null)
-//            for (OrderItemModel itemModel : newOrder.getItems()) {
-//                OrderItem orderItem = new OrderItem();
-//                orderItem.setOwner(owner);
-//                orderItem.setStore(store);
-//                orderItem.setOrder(order);
-//                if (itemModel.getItemNo() != null && itemModel.getItemNo() != 0) {
-//                    //                orderItem.setItem(itemRepository.findByStoreIdAndItemNo(store.getId(), item.getItemNo()).orElseThrow(() -> new OrderException(newOrder.getInvoiceNo(), "Item with number " + item.getItemNo() + " not found on the system.")));
-//                    Optional<Item> optionalItem = itemRepository.findByStoreIdAndItemNo(store.getId(), itemModel.getItemNo());
-//                    if (optionalItem.isPresent()) { // Null references are allowed
-//                        orderItem.setItem(optionalItem.get());
-//                    }
-//                }
-//                orderItem.setItemNo(itemModel.getItemNo());
-//                orderItem.setItemName(itemModel.getItemName());
-////                orderItem.setPrice(itemModel.getPrice());
-//                orderItem.setListPrice(itemModel.getListPrice());
-//                orderItem.setDiscount(itemModel.getDiscount());
-//                orderItemRepository.saveAndFlush(orderItem);
-//            }
-
-//
-//        if (order.getLevel().equals(Level.DELIVERY)) {
-//            DeliveryOrder deliveryOrder = new DeliveryOrder();
-//            deliveryOrder.setOwner(owner);
-//            deliveryOrder.setStore(store);
-//            deliveryOrder.setOrder(order);
-////            deliveryOrder.setDeliveryCustomer(deliveryCustomerRepository.findByStoreIdAndCustomerNo(store.getId(), newOrder.getCustomerNo()).orElseThrow(() -> new OrderException(newOrder.getInvoiceNo(), "Delivery customer with number " + newOrder.getCustomerNo() + " not found on the system.")));
-//            deliveryOrder.setInvoiceNo(newOrder.getInvoiceNo());
-//            deliveryOrder.setOrderNo(newOrder.getOrderNo());
-//            deliveryOrder.setSource(newOrder.getSource());
-//            deliveryOrder.setDriverName(newOrder.getDriverName());
-//            deliveryOrder.setZoneName(newOrder.getZoneName());
-//            deliveryOrder.setDeliveryTime(newOrder.getDeliveryTime());
-//            deliveryOrder.setIsCancelled(newOrder.getIsCancelled());
-//            deliveryOrder.setIsDelivered(newOrder.getIsDelivered());
-//            deliveryOrder = deliveryOrderRepository.saveAndFlush(deliveryOrder);
-//        }
-
-//        if (newOrder.getPayments() != null)
-//            for (PaymentModel p : newOrder.getPayments()) {
-//                Payment payment = new Payment();
-//                payment.setOwner(owner);
-//                payment.setStore(store);
-//                payment.setOrder(order);
-//                payment.setPaymentType(p.getType());
-//                payment.setName(p.getName());
-//                payment.setAmount(p.getAmount());
-//                paymentRepository.saveAndFlush(payment);
-//            }
-//
-//
 //        return order;
-//    }
+        return null;
+    }
 
 //    @Override
 //    public Order updateOrder(Owner owner, User user, Store store, OrderModel orderModel) {
