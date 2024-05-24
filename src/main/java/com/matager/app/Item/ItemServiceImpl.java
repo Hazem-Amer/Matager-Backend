@@ -42,57 +42,12 @@ public class ItemServiceImpl implements ItemService {
     private final SubCategoryRepository subCategoryRepository;
     private final StoreRepository storeRepository;
     private final FileUploadService fileUploadService;
-//    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public Item getItem(Long itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item : " + itemId + " not found"));
     }
 
-
-//    @Override
-//    public Page<Item> getItemsWithFiler(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Item> itemPage;
-//        boolean isNameProvided = name != null && !name.isEmpty();
-//
-//        if (isNameProvided && categoryId != null && subCategoryId != null && isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, name, categoryId, subCategoryId, isVisible, pageable);
-//        } else if (isNameProvided && categoryId != null && subCategoryId != null) {
-//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndSubcategoryId(storeId, name, categoryId, subCategoryId, pageable);
-//        } else if (isNameProvided && categoryId != null && isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryIdAndIsVisible(storeId, name, categoryId, isVisible, pageable);
-//        } else if (isNameProvided && subCategoryId != null && isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryIdAndIsVisible(storeId, name, subCategoryId, isVisible, pageable);
-//        } else if (categoryId != null && subCategoryId != null && isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryIdAndIsVisible(storeId, categoryId, subCategoryId, isVisible, pageable);
-//        } else if (isNameProvided && categoryId != null) {
-//            itemPage = itemRepository.findByStoreIdAndItemNameAndCategoryId(storeId, name, categoryId, pageable);
-//        } else if (isNameProvided && subCategoryId != null) {
-//            itemPage = itemRepository.findByStoreIdAndItemNameAndSubcategoryId(storeId, name, subCategoryId, pageable);
-//        } else if (categoryId != null && subCategoryId != null) {
-//            itemPage = itemRepository.findByStoreIdAndCategoryIdAndSubcategoryId(storeId, categoryId, subCategoryId, pageable);
-//        } else if (isNameProvided && isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndItemNameAndIsVisible(storeId, name, isVisible, pageable);
-//        } else if (categoryId != null && isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndCategoryIdAndIsVisible(storeId, categoryId, isVisible, pageable);
-//        } else if (subCategoryId != null && isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndSubcategoryIdAndIsVisible(storeId, subCategoryId, isVisible, pageable);
-//        } else if (isNameProvided) {
-//            itemPage = itemRepository.findByStoreIdAndItemName(storeId, name, pageable);
-//        } else if (categoryId != null) {
-//            itemPage = itemRepository.findByStoreIdAndCategoryId(storeId, categoryId, pageable);
-//        } else if (subCategoryId != null) {
-//            itemPage = itemRepository.findByStoreIdAndSubcategoryId(storeId, subCategoryId, pageable);
-//        } else if (isVisible != null) {
-//            itemPage = itemRepository.findByStoreIdAndIsVisible(storeId, isVisible, pageable);
-//        } else {
-//            itemPage = itemRepository.findByStoreId(storeId, pageable);
-//        }
-//
-//        return itemPage;
-//
-//    }
 
     public Page<Item> getItemsFilteredAndSorted(Long storeId, String itemName, Long categoryId, Long subCategoryId, Boolean isVisible, String sort, int page, int size) {
         Pageable pageable;

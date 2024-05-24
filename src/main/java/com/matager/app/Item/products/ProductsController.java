@@ -35,7 +35,7 @@ public class ProductsController {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("Items of this store have been retrieved successfully")
-                        .data(Map.of("items", itemService.getItemsFilteredAndSorted(storeId, name, categoryId, subCategoryId, isVisible, sort, page, size)))
+                        .data(Map.of("Products", itemService.getItemsFilteredAndSorted(storeId, name, categoryId, subCategoryId, isVisible, sort, page, size)))
                         .build());
     }
     @GetMapping("/{itemId}")
@@ -46,7 +46,7 @@ public class ProductsController {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("This item has been retrieved successfully")
-                        .data(Map.of("item", itemService.getItem(itemId)))
+                        .data(Map.of("Product", itemService.getItem(itemId)))
                         .build());
     }
 
