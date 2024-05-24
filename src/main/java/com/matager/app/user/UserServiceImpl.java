@@ -94,6 +94,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User addNewStoreUser(NewUserModel newUser) {
+        System.out.println("New User: " + newUser);
+
+        Store store = storeRepository.findById(newUser.getStoreId()).orElseThrow(() -> new IllegalStateException("Store not found."));
+
+        if (userRepository.existsByEmail(newUser.getEmail())) {
+            throw new IllegalStateException("Email already used.");
+        }
+
+        User user = new User();
+        user.setOwner(store.getOwner());
+        user.setUuid(UUID.randomUUID().toString());
+        user.setName(newUser.getName());
+        user.setEmail(newUser.getEmail());
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+
+
+        if (newUser.getRole() == null) {
+            user.setRole(UserRole.UNDEFINED);
+        } else {
+            if (newUser.getRole().equals(UserRole.SERVER_ADMIN)) {
+                throw new RuntimeException("Invalid user role.");
+            }
+            user.setRole(newUser.getRole());
+        }
+
+        if (newUser.getStoreId() != null) {
+            user.setDefaultStore(store);
+        }
+
+        user.setProfileImageUrl("Default Profile Image Url");
+
+        return userRepository.save(user);
+    }
+
+    @Override
     @Transactional
     public User deleteUser(String uuid) {
 //        User signedUser = authenticationFacade.getAuthenticatedUser();

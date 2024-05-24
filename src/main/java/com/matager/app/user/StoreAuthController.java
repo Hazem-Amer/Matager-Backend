@@ -67,7 +67,7 @@ public class StoreAuthController {
 
         newUserModel.setStoreId(storeId);
         newUserModel.setRole(UserRole.STORE_USER);
-        User user = userService.addNewUser(newUserModel);
+        User user = userService.addNewStoreUser(newUserModel);
         String token = tokenService.generateToken(user);
         log.info("new user created: " + user.getEmail());
 
@@ -93,11 +93,6 @@ public class StoreAuthController {
         data.put("userEmail", user.getEmail());
         data.put("userRole", user.getRole());
         data.put("userDefaultStoreId", user.getDefaultStore() != null ? user.getDefaultStore().getId() : "No Default Store.");
-        data.put("userStores",
-                storeService.getStores(owner.getId()).stream()
-                        .map(s ->
-                                Map.of("id", s.getId(), "name", s.getName(), "iconUrl", "")).toArray());
-
         data.put("currencyCode", "EGP"); // TODO: change later
         data.put("currencySymbol", "$"); // TODO: change later
         data.put("token", tokenService.generateToken(user, jwt.getExpiresAt()));

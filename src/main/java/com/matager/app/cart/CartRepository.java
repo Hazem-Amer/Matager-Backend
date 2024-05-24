@@ -1,10 +1,8 @@
-package com.matager.app.Cart;
+package com.matager.app.cart;
 
-import com.matager.app.Cart.CartItem.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

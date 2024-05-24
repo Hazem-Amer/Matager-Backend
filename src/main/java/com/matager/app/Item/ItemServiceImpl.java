@@ -74,19 +74,11 @@ public class ItemServiceImpl implements ItemService {
         Item item = new Item();
         Category category = categoryRepository.findById(newItem.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
         item.setOwner(owner);
-        if (newItem.getStoreUuid() != null) {
-            store = storeRepository.findByOwnerIdAndUuid(owner.getId(), newItem.getStoreUuid()).orElseThrow(() -> new RuntimeException("Store not found"));
-        } else {
-            if (user.getDefaultStore() == null)
-                throw new RuntimeException("No default store found, please specify store uuid");
-            store = user.getDefaultStore();
-        }
 
-        List<Long> categorySubCategoryIds = subCategoryRepository.findCategorySubCategoryIds(store.getId(), category.getId());
-        if (categorySubCategoryIds.contains(newItem.getSubcategoryId())) {
-            SubCategory subCategory = subCategoryRepository.findById(newItem.getSubcategoryId()).orElseThrow(() -> new RuntimeException("SubCategory not found"));
-            item.setSubcategory(subCategory);
-        } else throw new RuntimeException("SubCategory: " + newItem.getSubcategoryId() + " is not found in this Category");
+        store = storeRepository.findByOwnerIdAndId(owner.getId(), newItem.getStoreId()).orElseThrow(() -> new RuntimeException("Store not found"));
+
+        SubCategory subCategory = subCategoryRepository.findById(newItem.getSubcategoryId()).orElseThrow(() -> new RuntimeException("SubCategory not found"));
+        item.setSubcategory(subCategory);
         item.setStore(store);
         item.setItemNo(newItem.getItemNo());
         item.setItemName(newItem.getName());

@@ -40,7 +40,7 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
         subCategory.setName(newSubCategory.getName());
         subCategory.setIsVisible(newSubCategory.getIsVisible());
         String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, iconFile);
-        subCategory.setCategoryIconUrl(iconUrl);
+        subCategory.setIconUrl(iconUrl);
         subCategoryRepository.saveAndFlush(subCategory);
         return subCategory;
     }
@@ -57,7 +57,7 @@ public class SubCategoriesServiceImpl implements SubCategoriesService {
         }
         if (newIconFile != null) {
             String iconUrl = fileUploadService.upload(SUB_CATEGORY_ICON, newIconFile);
-            subCategory.setCategoryIconUrl(iconUrl);
+            subCategory.setIconUrl(iconUrl);
         }
 
         subCategoryRepository.saveAndFlush(subCategory);

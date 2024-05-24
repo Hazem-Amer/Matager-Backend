@@ -1,4 +1,4 @@
-package com.matager.app.Cart.CartItem;
+package com.matager.app.cart.cart_item;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

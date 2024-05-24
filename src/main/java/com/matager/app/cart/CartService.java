@@ -1,7 +1,6 @@
-package com.matager.app.Cart;
+package com.matager.app.cart;
 
-import com.matager.app.Cart.CartItem.CartItem;
-import com.matager.app.Cart.CartItem.CartItemModel;
+import com.matager.app.cart.cart_item.CartItem;
 
 import java.util.List;
 

@@ -13,6 +13,7 @@ public interface UserService {
     User signinUser(SigninModel form);
 
     User addNewUser(NewUserModel newUser);
+    User addNewStoreUser(NewUserModel newUser);
 
 
     User deleteUser(String uuid);

@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ItemModel {
 
-    private String storeUuid;
+    private Long storeId;
 
     private Long itemNo;
 

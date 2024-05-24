@@ -1,7 +1,7 @@
-package com.matager.app.Cart.CartItem;
+package com.matager.app.cart.cart_item;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.matager.app.Cart.Cart;
+import com.matager.app.cart.Cart;
 import com.matager.app.Item.Item;
 import com.matager.app.common.domain.BaseEntity;
 import jakarta.persistence.*;

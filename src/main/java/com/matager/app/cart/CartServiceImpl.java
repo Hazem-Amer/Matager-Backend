@@ -1,8 +1,7 @@
-package com.matager.app.Cart;
+package com.matager.app.cart;
 
-import com.matager.app.Cart.CartItem.CartItem;
-import com.matager.app.Cart.CartItem.CartItemModel;
-import com.matager.app.Cart.CartItem.CartItemRepository;
+import com.matager.app.cart.cart_item.CartItem;
+import com.matager.app.cart.cart_item.CartItemRepository;
 import com.matager.app.Item.Item;
 import com.matager.app.Item.ItemRepository;
 import com.matager.app.auth.AuthenticationFacade;
@@ -10,7 +9,6 @@ import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
 import com.matager.app.user.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
