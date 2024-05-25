@@ -69,11 +69,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Map<String, Long> getOrdersInfo(Long storeId) {
         Map<String, Long> orderInfoCounts = new HashMap<>();
-        orderInfoCounts.put("CANCELLED", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.CANCELLED.name()));
-        orderInfoCounts.put("DELIVERED", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.DELIVERED.name()));
-        orderInfoCounts.put("SHIPPED", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.SHIPPED.name()));
-        orderInfoCounts.put("PENDING", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.PENDING.name()));
-        orderInfoCounts.put("PROCESSING", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.PROCESSING.name()));
+        storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found"));
+        orderInfoCounts.put("CANCELLED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.CANCELLED.name()));
+        orderInfoCounts.put("DELIVERED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.DELIVERED.name()));
+        orderInfoCounts.put("SHIPPED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.SHIPPED.name()));
+        orderInfoCounts.put("PENDING", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.PENDING.name()));
+        orderInfoCounts.put("PROCESSING", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.PROCESSING.name()));
         orderInfoCounts.put("TOTAL", orderRepository.countAllOrders(storeId));
 
         return orderInfoCounts;
