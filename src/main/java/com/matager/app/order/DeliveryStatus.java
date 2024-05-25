@@ -1,12 +1,11 @@
 package com.matager.app.order;
 
 public enum DeliveryStatus {
-    PENDING,
     PROCESSING,
+    PENDING,
     SHIPPED,
-    IN_TRANSIT,
-    OUT_FOR_DELIVERY,
     DELIVERED,
-    CANCELLED,
-    RETURNED,
+    CANCELLED
+
+//    RETURNED,
 }

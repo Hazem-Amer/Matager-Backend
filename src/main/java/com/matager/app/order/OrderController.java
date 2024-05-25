@@ -7,15 +7,12 @@ package com.matager.app.order;
 import com.matager.app.auth.AuthenticationFacade;
 import com.matager.app.common.helper.res_model.ResponseModel;
 import com.matager.app.order.model.OrderModel;
-import com.matager.app.order.model.SyncOrdersModel;
-import com.matager.app.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -41,6 +38,18 @@ public class OrderController {
 //                        .data(Map.of("orders", orderService.syncOrders(user, ordersModel)))
 //                        .build());
 //    }
+
+    @GetMapping("/info/{id}")
+    public ResponseEntity<ResponseModel> getOrdersInfo(@PathVariable Long id) {
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This Order has been updated successfully")
+                        .data(Map.of("OrdersInfo",orderService.getOrdersInfo(id)))
+                        .build());
+    }
 @PatchMapping("/{id}")
 public ResponseEntity<ResponseModel> updateOrder(@PathVariable Long id, @RequestBody OrderModel orderModel) {
     return ResponseEntity.ok().body(

@@ -130,11 +130,10 @@ public class CartServiceImpl implements CartService {
             customer.setEmail(user.getEmail());
             customerRepository.saveAndFlush(customer);
 
-            order.setDeliveryStatus(DeliveryStatus.PENDING);
+            order.setDeliveryStatus(DeliveryStatus.PROCESSING);
             order.setCustomer(customer);
             order.setItems(orderItemRepository.saveAllAndFlush(orderItems));
             order.setIsPaid(false);
-            order.setDeliveryStatus(DeliveryStatus.PENDING);
             order.setPaymentType(PaymentType.CASH);
         }
 

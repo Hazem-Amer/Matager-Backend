@@ -6,12 +6,11 @@ package com.matager.app.order;
 
 import com.matager.app.cart.Cart;
 import com.matager.app.order.model.OrderModel;
-import com.matager.app.order.model.SyncOrdersModel;
 import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
 import com.matager.app.user.User;
 
-import java.util.List;
+import java.util.Map;
 
 public interface OrderService {
 
@@ -24,5 +23,7 @@ public interface OrderService {
     Order updateOrder(Long orderId,OrderModel orderModel);
 
     void deleteOrder(Long orderId);
+
+    Map<String,Long> getOrdersInfo(Long orderId);
 
 }

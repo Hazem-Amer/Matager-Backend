@@ -23,10 +23,13 @@ import com.matager.app.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -61,6 +64,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Long orderId) {
         orderRepository.deleteById(orderId);
+    }
+
+    @Override
+    public Map<String, Long> getOrdersInfo(Long storeId) {
+        Map<String, Long> orderInfoCounts = new HashMap<>();
+        orderInfoCounts.put("CANCELLED", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.CANCELLED.name()));
+        orderInfoCounts.put("DELIVERED", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.DELIVERED.name()));
+        orderInfoCounts.put("SHIPPED", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.SHIPPED.name()));
+        orderInfoCounts.put("PENDING", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.PENDING.name()));
+        orderInfoCounts.put("PROCESSING", orderRepository.countByDeliveryStatus(storeId,DeliveryStatus.PROCESSING.name()));
+        orderInfoCounts.put("TOTAL", orderRepository.countAllOrders(storeId));
+
+        return orderInfoCounts;
     }
 
 
