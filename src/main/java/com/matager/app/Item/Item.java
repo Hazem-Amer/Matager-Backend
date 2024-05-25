@@ -30,8 +30,7 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties({"owner", "store"})
 @Table(name = "item",
         indexes = {
-                @Index(name = "idx_item_store_id", columnList = "store_id"),
-                @Index(name = "idx_item_item_no", columnList = "item_no")
+                @Index(name = "idx_item_store_id", columnList = "store_id")
         }
 )
 public class Item extends BaseEntity {
@@ -58,8 +57,6 @@ public class Item extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY)
     private List<ItemImage> itemImages;
 
-    @Column(name = "item_no")
-    private Long itemNo;
 
     @Column(name = "item_name")
     private String itemName;

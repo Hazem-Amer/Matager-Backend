@@ -80,7 +80,6 @@ public class ItemServiceImpl implements ItemService {
         SubCategory subCategory = subCategoryRepository.findById(newItem.getSubcategoryId()).orElseThrow(() -> new RuntimeException("SubCategory not found"));
         item.setSubcategory(subCategory);
         item.setStore(store);
-        item.setItemNo(newItem.getItemNo());
         item.setItemName(newItem.getName());
         item.setSale(newItem.isSale());
         item.setListPrice(newItem.getListPrice());

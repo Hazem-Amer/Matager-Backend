@@ -19,19 +19,14 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificationExecutor<Item> {
 
-    Optional<Item> findByStoreIdAndItemNo(Long storeId, Long itemNo);
     @Query(value = "SELECT * FROM item WHERE store_id = :storeId AND id = :itemId", nativeQuery = true)
     Optional<Item> findByStoreIdAndItemId(Long storeId, Long itemId);
 
 
     Page<Item> findAllByStoreId(Long storeId, Pageable pageable);
 
-    boolean existsByStoreIdAndItemNo(Long storeId, Long itemNo);
 
 
-
-    @Query(value = "SELECT id FROM item WHERE store_id = :storeId AND item_no = :itemNo", nativeQuery = true)
-    Long getIdByStoreIdAndItemNo(Long storeId, Long itemNo);
 
     List<Item> findAllByOwnerId(Long ownerId, Pageable pageable);
 

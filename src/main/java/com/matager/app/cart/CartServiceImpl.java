@@ -122,7 +122,7 @@ public class CartServiceImpl implements CartService {
         if (cart.getCartItems() != null) {
             for (CartItem cartItem : cart.getCartItems()) {
                 Item item = cartItem.getItem();
-                orderItems.add(new OrderItem(owner, store, order, item, item.getItemNo(), item.getItemName(), cartItem.getQuantity(), item.getListPrice(), 0d, 0d));
+                orderItems.add(new OrderItem(owner, store, order, item, item.getItemName(), cartItem.getQuantity(), item.getListPrice(), 0d, 0d));
             }
             //for testing only
             Customer customer = new Customer();

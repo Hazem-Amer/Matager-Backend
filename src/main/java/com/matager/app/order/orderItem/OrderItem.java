@@ -44,10 +44,6 @@ public class OrderItem extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    // if item is deleted these props are IMPORTANT
-    @Column(name = "item_no")
-    private Long itemNo;
-
     @Column(name = "item_name")
     private String itemName;
 
