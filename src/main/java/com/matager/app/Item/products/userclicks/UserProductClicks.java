@@ -1,8 +1,9 @@
-package com.matager.app.cart;
+package com.matager.app.Item.products.userclicks;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.matager.app.cart.cart_item.CartItem;
+import com.matager.app.Item.Item;
 import com.matager.app.common.domain.BaseEntity;
+import com.matager.app.owner.Owner;
 import com.matager.app.store.Store;
 import com.matager.app.user.User;
 import jakarta.persistence.*;
@@ -11,26 +12,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"store","user"})
-@Table(name = "cart")
-public class Cart extends BaseEntity {
+@JsonIgnoreProperties({""})
+@Table(name = "user_product_click")
+public class UserProductClicks extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private List<CartItem> cartItems;
+    @Column(name = "click_count")
+    private int clickCount;
+
 
 }

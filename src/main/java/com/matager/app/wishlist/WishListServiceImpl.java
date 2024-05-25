@@ -26,7 +26,7 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public List<WishListItem> getWishListItems(Long storeId) {
-        WishList wishList = getUserCartOrCreateNew(storeId);
+        WishList wishList = getUserWIshListOrCreateNew(storeId);
         return wishListItemRepository.findAllByWishListId(wishList.getId())
                 .orElseThrow(() -> new RuntimeException("WishList: " + wishList.getId() + " has no items"));
 
@@ -34,9 +34,9 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public WishListItem addItemToWishList(Long storeId, Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Product not found"));
         // Find existing WishList or create a new one
-        WishList wishList = getUserCartOrCreateNew(storeId);
+        WishList wishList = getUserWIshListOrCreateNew(storeId);
 
         // Find existing WishList item
         Optional<WishListItem> optionalWishListItem = wishListItemRepository.findByWishListIdAndItemId(wishList.getId(), item.getId());
@@ -46,8 +46,6 @@ public class WishListServiceImpl implements WishListService {
         } else {
             wishListItem = new WishListItem();
             wishListItem.setWishList(wishList);
-            item.setIsInWishList(true);
-            itemRepository.saveAndFlush(item);
             wishListItem.setItem(item);
             wishListItem.setName(item.getItemName());
             wishListItem.setListPrice(item.getListPrice());
@@ -58,18 +56,14 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public void removeItemFromWishList(Long storeId, Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
-        WishList wishList = getUserCartOrCreateNew(storeId);
-        if (item.getIsInWishList()) {
-            WishListItem wishListItem = wishListItemRepository.findByWishListIdAndItemId(wishList.getId(), item.getId())
-                    .orElseThrow(() -> new RuntimeException("Item not found in the WishList"));
-            wishListItemRepository.delete(wishListItem);
-        }
-        item.setIsInWishList(false);
-        itemRepository.saveAndFlush(item);
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Product not found"));
+        WishList wishList = getUserWIshListOrCreateNew(storeId);
+        WishListItem wishListItem = wishListItemRepository.findByWishListIdAndItemId(wishList.getId(), item.getId())
+                .orElseThrow(() -> new RuntimeException("Product not found in the WishList"));
+        wishListItemRepository.delete(wishListItem);
     }
 
-    private WishList getUserCartOrCreateNew(Long storeId) {
+    private WishList getUserWIshListOrCreateNew(Long storeId) {
         User user = authenticationFacade.getAuthenticatedUser();
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found"));

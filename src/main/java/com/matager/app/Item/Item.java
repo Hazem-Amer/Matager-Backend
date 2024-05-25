@@ -94,8 +94,6 @@ public class Item extends BaseEntity {
     @Column(name = "is_visible")
     private Boolean isVisible;
 
-    @Column(name = "is_in_wishlist")
-    private Boolean isInWishList;
 
 }
 
