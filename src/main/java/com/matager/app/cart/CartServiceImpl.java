@@ -119,25 +119,31 @@ public class CartServiceImpl implements CartService {
         List<OrderItem> orderItems = new ArrayList<>();
         order.setOwner(owner);
         order.setStore(store);
+
+        order.setDeliveryStatus(DeliveryStatus.PENDING);
+        order.setUser(user);
+        order.setIsPaid(false);
+        order.setPaymentType(PaymentType.CASH);
+
+
+        order = orderRepository.saveAndFlush(order);
+        Double orderTotal = 0d;
         if (cart.getCartItems() != null) {
             for (CartItem cartItem : cart.getCartItems()) {
                 Item item = cartItem.getItem();
-                orderItems.add(new OrderItem(owner, store, order, item, item.getItemName(), cartItem.getQuantity(), item.getListPrice(), 0d, 0d));
+                Double totalPrice = cartItem.getListPrice() * cartItem.getQuantity();
+                orderTotal += totalPrice;
+                OrderItem orderItem = new OrderItem(owner, store, order, item, item.getItemName(), cartItem.getQuantity(), item.getListPrice(), totalPrice, 0d);
+                orderItems.add(orderItem);
             }
-            //for testing only
-            Customer customer = new Customer();
-            customer.setName(user.getName());
-            customer.setEmail(user.getEmail());
-            customerRepository.saveAndFlush(customer);
 
-            order.setDeliveryStatus(DeliveryStatus.PENDING);
-            order.setCustomer(customer);
-            order.setItems(orderItemRepository.saveAllAndFlush(orderItems));
-            order.setIsPaid(false);
-            order.setPaymentType(PaymentType.CASH);
+            orderItemRepository.saveAllAndFlush(orderItems);
         }
 
+        order.setTotal(orderTotal);
+        order.setItems(orderItems);
         order = orderRepository.saveAndFlush(order);
+
         return order;
     }
 

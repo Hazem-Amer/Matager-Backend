@@ -95,10 +95,10 @@ public class OrderServiceImpl implements OrderService {
 //                throw new RuntimeException("No default store found, please specify store uuid.");
 //            store = user.getDefaultStore();
 //        }
-
-
+//
+//
 //        List<Order> orders = new ArrayList<>();
-
+//
 //        for (OrderModel orderModel : ordersModel.getOrders()) {
 //            if (orderRepository.existsByStoreIdAndInvoiceNo(store.getId(), orderModel.getInvoiceNo())) {
 //                orders.add(updateOrder(owner, user, store, orderModel));
@@ -106,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
 //                orders.add(saveOrder(owner, user, store, orderModel));
 //            }
 //        }
-
+//
 //
 //        return orders;
 //    }
@@ -130,9 +130,9 @@ public class OrderServiceImpl implements OrderService {
 //        return saveOrder(owner, user, store, newOrder);
 //    }
 
-    @Override
-    @Transactional
-    public Order saveOrder(Owner owner, User user, Store store, Cart cart) {
+//    @Override
+//    @Transactional
+//    public Order saveOrder(Owner owner, User user, Store store, Cart cart) {
 //        // User is not used here, but it's passed to the method to be used in the future if needed (e.g. to check if the user has the permission to create orders, monitor who saved the order).
 //        Order order = new Order();
 //        List<OrderItem> orderItems = new ArrayList<>();
@@ -142,22 +142,16 @@ public class OrderServiceImpl implements OrderService {
 //        if (cart.getCartItems() != null) {
 //            for (CartItem cartItem : cart.getCartItems()) {
 //                Item item = cartItem.getItem();
-//                orderItems.add(new OrderItem(owner, store, order, item, item.getItemNo(), item.getItemName(), cartItem.getQuantity(), item.getListPrice(), 0d, 0d));
+//                orderItems.add(new OrderItem(owner, store, order, item, item.getItemName(), cartItem.getQuantity(), item.getListPrice(), 0d, 0d));
 //            }
-//            //for testing only
-//            Customer customer = new Customer();
-//            customer.setName(user.getName());
-//            customer.setEmail(user.getEmail());
-//            customerRepository.saveAndFlush(customer);
 //            order.setDeliveryStatus(DeliveryStatus.PENDING);
-//            order.setCustomer(customer);
+//            order.setUser(user);
 //            order.setItems(orderItemRepository.saveAllAndFlush(orderItems));
 //        }
 //
 //        order = orderRepository.saveAndFlush(order);
 //        return order;
-        return null;
-    }
+//    }
 
 //    @Override
 //    public Order updateOrder(Owner owner, User user, Store store, OrderModel orderModel) {
@@ -244,8 +238,6 @@ public class OrderServiceImpl implements OrderService {
 //        }
 //
 //        return order;
-//    }
+
 
 }
-
-

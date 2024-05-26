@@ -12,6 +12,7 @@ import com.matager.app.order.orderItem.OrderItem;
 import com.matager.app.owner.Owner;
 import com.matager.app.payment.PaymentType;
 import com.matager.app.store.Store;
+import com.matager.app.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,10 +44,10 @@ public class Order extends BaseEntity {
     @JsonIgnore
     private Store store;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Many orders belong to one customer
-    @JoinColumn(name = "customer_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private Customer customer;
+    private User user;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
