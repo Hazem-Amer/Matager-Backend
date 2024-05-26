@@ -39,9 +39,9 @@ public class OrderController {
 //                        .build());
 //    }
     @GetMapping("/{storeId}")
-    public ResponseEntity<ResponseModel> getOrdersPaged(@PathVariable Long storeId,
-                                                        @RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ResponseModel> getOrders(@PathVariable Long storeId,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "10") int size) {
 
         return ResponseEntity.ok().body(
                 ResponseModel.builder()

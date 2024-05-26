@@ -50,7 +50,7 @@ public class Order extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<OrderItem> items;
 
 

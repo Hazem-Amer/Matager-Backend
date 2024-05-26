@@ -20,7 +20,7 @@ public interface OrderService {
 //    Order saveOrder(User user, OrderModel newOrder);
 //
 //    Order saveOrder(Owner owner, User user, Store store, Cart cart);
-    Page<Order> getOrders(Long storeId,int page,int size);
+    Page<OwnerOrderModel> getOrders(Long storeId,int page,int size);
     Order updateOrder(Long orderId,OrderModel orderModel);
 
     void deleteOrder(Long orderId);

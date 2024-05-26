@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,21 +47,34 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CustomerRepository customerRepository;
 
-    @Override
-    public Page<Order> getOrders(Long storeId, int page, int size) {
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found"));
-        return orderRepository.findAllByStoreId(store.getId(), PageRequest.of(page, size));
-    }
+//    @Override
+//    public Page<Order> getOrders(Long storeId, int page, int size) {
+//        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found"));
+//        Page<Order> orders =orderRepository.findAllByStoreId(store.getId(), PageRequest.of(page, size));
+//
+//    }
+public Page<OwnerOrderModel> getOrders(Long storeId, int page, int size) {
+    Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new RuntimeException("Store not found"));
+    Page<Order> ordersPage = orderRepository.findAllByStoreId(store.getId(), PageRequest.of(page, size));
 
+    List<OwnerOrderModel> ownerOrderModels = ordersPage.getContent().stream().map(order -> {
+        OwnerOrderModel ownerOrderModel = new OwnerOrderModel();
+        ownerOrderModel.setUserName(order.getUser().getName());
+        ownerOrderModel.setPaymentType(order.getPaymentType());
+        ownerOrderModel.setDeliveryStatus(order.getDeliveryStatus());
+        ownerOrderModel.setIsPaid(order.getIsPaid());
+        ownerOrderModel.setCreatedAt(order.getCreatedAt());
+        ownerOrderModel.setDeliveredAt(order.getDeliveredAt());
+        ownerOrderModel.setTotal(order.getTotal());
+        return ownerOrderModel;
+    }).collect(Collectors.toList());
+
+    return new PageImpl<>(ownerOrderModels, PageRequest.of(page, size), ordersPage.getTotalElements());
+}
     @Override
     public Order updateOrder(Long orderId, OrderModel orderModel) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("order " + orderId + " not found"));
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (Long id : orderModel.getItemsIds()) {
-            OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(() -> new RuntimeException("order " + orderId + " not found"));
-            orderItems.add(orderItem);
-        }
-        order.setItems(orderItems);
         order.setPaymentType(orderModel.getPaymentType());
         order.setDeliveryMethod(orderModel.getDeliveryMethod());
         order.setDeliveryStatus(orderModel.getDeliveryStatus());
