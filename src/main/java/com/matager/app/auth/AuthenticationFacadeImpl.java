@@ -25,7 +25,8 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
         try {
             subject = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSubject();
         } catch (Exception e) {
-            throw new NoAuthUserFoundException();
+//            throw new NoAuthUserFoundException();
+            return null;
         }
 
         return userService.getUserByUuid(subject);
