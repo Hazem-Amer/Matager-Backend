@@ -94,6 +94,12 @@ public class Item extends BaseEntity {
     @Column(name = "is_visible")
     private Boolean isVisible;
 
+    @Column(name = "sold_times")
+    private Integer soldTimes;
+
+    @Column(name = "rating")
+    private Double rating;
+
 
 }
 
