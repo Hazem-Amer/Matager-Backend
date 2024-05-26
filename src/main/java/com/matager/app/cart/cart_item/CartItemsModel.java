@@ -6,12 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Data
 @Validated
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartItemModel {
-    private CartItem cartItem;
-    private int quantity;
+public class CartItemsModel {
+    private List<CartItem> cartItems;
+    private Double subTotal;
+    private int count;
 }

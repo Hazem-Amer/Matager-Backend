@@ -1,10 +1,10 @@
-package com.matager.app.cart;
+package com.matager.app.wishlist;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.matager.app.cart.cart_item.CartItem;
 import com.matager.app.common.domain.BaseEntity;
 import com.matager.app.store.Store;
 import com.matager.app.user.User;
+import com.matager.app.wishlist.wishlist_item.WishListItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,8 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"store","user"})
-@Table(name = "cart")
-public class Cart extends BaseEntity {
+@Table(name = "wish_list")
+public class WishList extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
@@ -29,8 +29,7 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private List<CartItem> cartItems;
-
+    @OneToMany(mappedBy = "wishList", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<WishListItem> wishListItems;
 }

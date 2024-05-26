@@ -38,15 +38,29 @@ public class OrderItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
+    @JsonIgnoreProperties({
+            "hibernateLazyInitializer",
+            "handler",
+            "owner",
+            "store",
+            "itemNo",
+            "itemName",
+            "maximumOrderQuantity",
+            "minimumOrderQuantity",
+            "quantity",
+            "skuNumber",
+            "category",
+            "subcategory",
+            "weight",
+            "costPrice",
+            "isVisible"
+    })
     private Item item;
-
-    // if item is deleted these props are IMPORTANT
-    @Column(name = "item_no")
-    private Long itemNo;
 
     @Column(name = "item_name")
     private String itemName;

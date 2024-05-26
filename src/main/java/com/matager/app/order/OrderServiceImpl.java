@@ -4,20 +4,37 @@
 
 package com.matager.app.order;
 
+import com.matager.app.Item.Item;
 import com.matager.app.Item.ItemRepository;
+import com.matager.app.cart.Cart;
+import com.matager.app.cart.cart_item.CartItem;
+import com.matager.app.order.customer.Customer;
+import com.matager.app.order.customer.CustomerRepository;
 import com.matager.app.order.delivery.DeliveryCustomerRepository;
 import com.matager.app.order.delivery.DeliveryOrderRepository;
 import com.matager.app.order.model.OrderModel;
 import com.matager.app.order.orderItem.OrderItem;
 import com.matager.app.order.orderItem.OrderItemRepository;
+import com.matager.app.owner.Owner;
 import com.matager.app.payment.PaymentRepository;
+import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
+import com.matager.app.user.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,21 +43,38 @@ public class OrderServiceImpl implements OrderService {
 
     private final StoreRepository storeRepository;
     private final ItemRepository itemRepository;
-    private final DeliveryCustomerRepository deliveryCustomerRepository;
     private final OrderRepository orderRepository;
-    private final DeliveryOrderRepository deliveryOrderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final PaymentRepository paymentRepository;
+    private final CustomerRepository customerRepository;
 
+//    @Override
+//    public Page<Order> getOrders(Long storeId, int page, int size) {
+//        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found"));
+//        Page<Order> orders =orderRepository.findAllByStoreId(store.getId(), PageRequest.of(page, size));
+//
+//    }
+public Page<OwnerOrderModel> getOrders(Long storeId, int page, int size) {
+    Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new RuntimeException("Store not found"));
+    Page<Order> ordersPage = orderRepository.findAllByStoreId(store.getId(), PageRequest.of(page, size));
+
+    List<OwnerOrderModel> ownerOrderModels = ordersPage.getContent().stream().map(order -> {
+        OwnerOrderModel ownerOrderModel = new OwnerOrderModel();
+        ownerOrderModel.setUserName(order.getUser().getName());
+        ownerOrderModel.setPaymentType(order.getPaymentType());
+        ownerOrderModel.setDeliveryStatus(order.getDeliveryStatus());
+        ownerOrderModel.setIsPaid(order.getIsPaid());
+        ownerOrderModel.setCreatedAt(order.getCreatedAt());
+        ownerOrderModel.setDeliveredAt(order.getDeliveredAt());
+        ownerOrderModel.setTotal(order.getTotal());
+        return ownerOrderModel;
+    }).collect(Collectors.toList());
+
+    return new PageImpl<>(ownerOrderModels, PageRequest.of(page, size), ordersPage.getTotalElements());
+}
     @Override
     public Order updateOrder(Long orderId, OrderModel orderModel) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("order " + orderId + " not found"));
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (Long id : orderModel.getItemsIds()) {
-            OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(() -> new RuntimeException("order " + orderId + " not found"));
-            orderItems.add(orderItem);
-        }
-        order.setItems(orderItems);
         order.setPaymentType(orderModel.getPaymentType());
         order.setDeliveryMethod(orderModel.getDeliveryMethod());
         order.setDeliveryStatus(orderModel.getDeliveryStatus());
@@ -54,6 +88,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Long orderId) {
         orderRepository.deleteById(orderId);
+    }
+
+    @Override
+    public Map<String, Long> getOrdersInfo(Long storeId) {
+        Map<String, Long> orderInfoCounts = new HashMap<>();
+        storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found"));
+        orderInfoCounts.put("CANCELLED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.CANCELLED.name()));
+        orderInfoCounts.put("DELIVERED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.DELIVERED.name()));
+        orderInfoCounts.put("SHIPPED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.SHIPPED.name()));
+        orderInfoCounts.put("PENDING", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.PENDING.name()));
+        orderInfoCounts.put("PROCESSING", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.PROCESSING.name()));
+        orderInfoCounts.put("TOTAL", orderRepository.countAllOrders(storeId));
+
+        return orderInfoCounts;
     }
 
 
@@ -71,10 +119,10 @@ public class OrderServiceImpl implements OrderService {
 //                throw new RuntimeException("No default store found, please specify store uuid.");
 //            store = user.getDefaultStore();
 //        }
-
-
+//
+//
 //        List<Order> orders = new ArrayList<>();
-
+//
 //        for (OrderModel orderModel : ordersModel.getOrders()) {
 //            if (orderRepository.existsByStoreIdAndInvoiceNo(store.getId(), orderModel.getInvoiceNo())) {
 //                orders.add(updateOrder(owner, user, store, orderModel));
@@ -82,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
 //                orders.add(saveOrder(owner, user, store, orderModel));
 //            }
 //        }
-
+//
 //
 //        return orders;
 //    }
@@ -108,70 +156,24 @@ public class OrderServiceImpl implements OrderService {
 
 //    @Override
 //    @Transactional
-//    public Order saveOrder(Owner owner, User user, Store store, OrderModel newOrder) {
+//    public Order saveOrder(Owner owner, User user, Store store, Cart cart) {
 //        // User is not used here, but it's passed to the method to be used in the future if needed (e.g. to check if the user has the permission to create orders, monitor who saved the order).
-//
 //        Order order = new Order();
+//        List<OrderItem> orderItems = new ArrayList<>();
 //        order.setOwner(owner);
-//        order.setCreatedAt(newOrder.getCreatedAt());
 //        order.setStore(store);
-//        order.setIsCancelled(newOrder.getIsCancelled());
-//        order.setTotal(newOrder.getTotal());
+//        order = orderRepository.saveAndFlush(order);
+//        if (cart.getCartItems() != null) {
+//            for (CartItem cartItem : cart.getCartItems()) {
+//                Item item = cartItem.getItem();
+//                orderItems.add(new OrderItem(owner, store, order, item, item.getItemName(), cartItem.getQuantity(), item.getListPrice(), 0d, 0d));
+//            }
+//            order.setDeliveryStatus(DeliveryStatus.PENDING);
+//            order.setUser(user);
+//            order.setItems(orderItemRepository.saveAllAndFlush(orderItems));
+//        }
 //
 //        order = orderRepository.saveAndFlush(order);
-//
-//        if (newOrder.getItems() != null)
-//            for (OrderItemModel itemModel : newOrder.getItems()) {
-//                OrderItem orderItem = new OrderItem();
-//                orderItem.setOwner(owner);
-//                orderItem.setStore(store);
-//                orderItem.setOrder(order);
-//                if (itemModel.getItemNo() != null && itemModel.getItemNo() != 0) {
-//                    //                orderItem.setItem(itemRepository.findByStoreIdAndItemNo(store.getId(), item.getItemNo()).orElseThrow(() -> new OrderException(newOrder.getInvoiceNo(), "Item with number " + item.getItemNo() + " not found on the system.")));
-//                    Optional<Item> optionalItem = itemRepository.findByStoreIdAndItemNo(store.getId(), itemModel.getItemNo());
-//                    if (optionalItem.isPresent()) { // Null references are allowed
-//                        orderItem.setItem(optionalItem.get());
-//                    }
-//                }
-//                orderItem.setItemNo(itemModel.getItemNo());
-//                orderItem.setItemName(itemModel.getItemName());
-////                orderItem.setPrice(itemModel.getPrice());
-//                orderItem.setListPrice(itemModel.getListPrice());
-//                orderItem.setDiscount(itemModel.getDiscount());
-//                orderItemRepository.saveAndFlush(orderItem);
-//            }
-
-//
-//        if (order.getLevel().equals(Level.DELIVERY)) {
-//            DeliveryOrder deliveryOrder = new DeliveryOrder();
-//            deliveryOrder.setOwner(owner);
-//            deliveryOrder.setStore(store);
-//            deliveryOrder.setOrder(order);
-////            deliveryOrder.setDeliveryCustomer(deliveryCustomerRepository.findByStoreIdAndCustomerNo(store.getId(), newOrder.getCustomerNo()).orElseThrow(() -> new OrderException(newOrder.getInvoiceNo(), "Delivery customer with number " + newOrder.getCustomerNo() + " not found on the system.")));
-//            deliveryOrder.setInvoiceNo(newOrder.getInvoiceNo());
-//            deliveryOrder.setOrderNo(newOrder.getOrderNo());
-//            deliveryOrder.setSource(newOrder.getSource());
-//            deliveryOrder.setDriverName(newOrder.getDriverName());
-//            deliveryOrder.setZoneName(newOrder.getZoneName());
-//            deliveryOrder.setDeliveryTime(newOrder.getDeliveryTime());
-//            deliveryOrder.setIsCancelled(newOrder.getIsCancelled());
-//            deliveryOrder.setIsDelivered(newOrder.getIsDelivered());
-//            deliveryOrder = deliveryOrderRepository.saveAndFlush(deliveryOrder);
-//        }
-
-//        if (newOrder.getPayments() != null)
-//            for (PaymentModel p : newOrder.getPayments()) {
-//                Payment payment = new Payment();
-//                payment.setOwner(owner);
-//                payment.setStore(store);
-//                payment.setOrder(order);
-//                payment.setPaymentType(p.getType());
-//                payment.setName(p.getName());
-//                payment.setAmount(p.getAmount());
-//                paymentRepository.saveAndFlush(payment);
-//            }
-//
-//
 //        return order;
 //    }
 
@@ -260,8 +262,6 @@ public class OrderServiceImpl implements OrderService {
 //        }
 //
 //        return order;
-//    }
+
 
 }
-
-

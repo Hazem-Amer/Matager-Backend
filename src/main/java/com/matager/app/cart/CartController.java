@@ -17,7 +17,7 @@ import java.util.Map;
 public class CartController {
     private final CartService cartService;
     @GetMapping
-    public ResponseEntity<ResponseModel> getCartItems(@PathVariable Long storeId) {
+    public ResponseEntity<ResponseModel> getCart(@PathVariable Long storeId) {
 
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
@@ -25,7 +25,7 @@ public class CartController {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("CartItems successfully retrieved")
-                        .data(Map.of("CartItems", cartService.getCartItems(storeId)))
+                        .data(Map.of("Cart", cartService.getCartItems(storeId)))
                         .build());
     }
 
@@ -54,9 +54,9 @@ public class CartController {
     }
 
     @PatchMapping("/add/{itemId}")
-    public ResponseEntity<ResponseModel> increaseItemQuantity(@PathVariable Long storeId,
-                                                              @PathVariable Long itemId,
-                                                              @RequestBody Map<String, Integer> quantity) {
+    public ResponseEntity<ResponseModel> updateItemQuantity(@PathVariable Long storeId,
+                                                            @PathVariable Long itemId,
+                                                            @RequestBody Map<String, Double> quantity) {
         cartService.updateCartItemQuantity(storeId, itemId, quantity.get("quantity"));
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
@@ -64,6 +64,19 @@ public class CartController {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("Item quantity updated successfully")
+                        .build());
+    }
+    @PostMapping("/checkout")
+    public ResponseEntity<ResponseModel> cartCheckOut(@PathVariable Long storeId)
+    {
+
+        cartService.cartCheckOut(storeId);
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Order has been placed successfully")
                         .build());
     }
 }

@@ -1,4 +1,4 @@
-package com.matager.app.order;
+package com.matager.app.order.customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.matager.app.common.domain.BaseEntity;
@@ -17,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "customer")
 @JsonIgnoreProperties({"id", "owner", "store"})
+//Temp Entity
 public class Customer extends BaseEntity {
     @Column(name = "name")
     private String name;

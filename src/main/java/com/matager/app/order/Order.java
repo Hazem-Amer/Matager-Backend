@@ -7,12 +7,12 @@ package com.matager.app.order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.matager.app.common.domain.BaseEntity;
-import com.matager.app.order.delivery.DeliveryOrder;
+import com.matager.app.order.customer.Customer;
 import com.matager.app.order.orderItem.OrderItem;
 import com.matager.app.owner.Owner;
-import com.matager.app.payment.Payment;
 import com.matager.app.payment.PaymentType;
 import com.matager.app.store.Store;
+import com.matager.app.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,7 +24,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "owner", "store"})
+@JsonIgnoreProperties({"owner", "store"})
 @Table(name = "`order`",
         indexes = {
                 @Index(name = "idx_order_owner_id", columnList = "owner_id"),
@@ -44,13 +44,13 @@ public class Order extends BaseEntity {
     @JsonIgnore
     private Store store;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Many orders belong to one customer
-    @JoinColumn(name = "customer_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private Customer customer;
+    private User user;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<OrderItem> items;
 
 
@@ -89,5 +89,8 @@ public class Order extends BaseEntity {
     @Column(name = "total")
     private Double total;
 
-
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

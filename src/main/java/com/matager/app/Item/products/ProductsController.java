@@ -1,8 +1,6 @@
 package com.matager.app.Item.products;
 
-import com.matager.app.Item.ItemService;
 import com.matager.app.common.helper.res_model.ResponseModel;
-import com.matager.app.Item.products.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,8 +15,8 @@ import java.util.Map;
 @RestController
 @Slf4j
 public class ProductsController {
-    //    private final ProductService productService;
-    private final ItemService itemService;
+        private final ProductService productService;
+
 
     @GetMapping
     public ResponseEntity<ResponseModel> getProducts(@PathVariable Long storeId,
@@ -35,18 +33,18 @@ public class ProductsController {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("Items of this store have been retrieved successfully")
-                        .data(Map.of("Products", itemService.getItemsFilteredAndSorted(storeId, name, categoryId, subCategoryId, isVisible, sort, page, size)))
+                        .data(Map.of("Products", productService.getProductsFilteredAndSorted(storeId, name, categoryId, subCategoryId, isVisible, sort, page, size)))
                         .build());
     }
     @GetMapping("/{itemId}")
-    public ResponseEntity<ResponseModel> getProduct(@PathVariable Long itemId) {
+    public ResponseEntity<ResponseModel> getProduct(@PathVariable Long storeId,@PathVariable Long itemId) {
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
                         .timeStamp(LocalDateTime.now().toString())
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("This item has been retrieved successfully")
-                        .data(Map.of("Product", itemService.getItem(itemId)))
+                        .data(Map.of("Product", productService.getProduct(storeId ,itemId)))
                         .build());
     }
 

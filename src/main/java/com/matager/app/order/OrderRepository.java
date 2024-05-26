@@ -5,24 +5,38 @@
 package com.matager.app.order;
 
 import com.matager.app.common.statistics.projection.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> , PagingAndSortingRepository<Order, Long> {
 
     // ----------------------- Widget Queries ----------------------- //
     boolean isSunday = true; // TODO: implement logic to determine the first day of the week based on user country.
+    Page<Order> findAllByStoreId(Long storeId, Pageable pageable);
+    @Query(value = "SELECT * FROM `order` WHERE store_id = :storeId AND user_id = :userId AND delivery_status = :deliveryStatus", nativeQuery = true)
+    Optional<List<Order>> findAllByStoreIdAndUserIdAndDeliveryStatus(@Param("storeId") Long storeId, @Param("userId") Long userId, @Param("deliveryStatus") String deliveryStatus);
 
 //    Optional<Order> findByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
 
-//    boolean existsByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
+    //    boolean existsByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
+    @Query(value = "SELECT COUNT(*) FROM `order` WHERE delivery_status = :deliveryStatus AND store_id = :storeId", nativeQuery = true)
+    Long countByDeliveryStatus(@Param("storeId") Long storeId, @Param("deliveryStatus") String deliveryStatus);
+
+    @Query(value = "SELECT COUNT(*) FROM `order` WHERE store_id = :storeId", nativeQuery = true)
+    Long countAllOrders(@Param("storeId") Long storeId);
 
     @Modifying
     @Query(value = "DELETE FROM `order` o WHERE o.store_id = :storeId", nativeQuery = true)

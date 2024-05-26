@@ -23,8 +23,6 @@ public class ItemModel {
 
     private Long storeId;
 
-    private Long itemNo;
-
     private String name;
 
     private String mainImage;
