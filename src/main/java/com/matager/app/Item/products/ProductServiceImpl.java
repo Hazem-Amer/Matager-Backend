@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,6 +23,12 @@ public class ProductServiceImpl implements ProductService {
     private final AuthenticationFacade authenticationFacade;
     private final UserProductClicksRepository userProductClicksRepository;
     private final StoreRepository storeRepository;
+
+    @Override
+    public List<Item> getRecommendedProducts(Long storeId) {
+        User user = authenticationFacade.getAuthenticatedUser();
+        return itemService.getRecommendedProducts(storeId, user.getId());
+    }
 
     @Override
     public Page<Item> getProductsFilteredAndSorted(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, String sort, int page, int size) {

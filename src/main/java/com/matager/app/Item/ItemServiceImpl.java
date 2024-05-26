@@ -70,6 +70,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public List<Item> getRecommendedProducts(Long storeId, Long userId) {
+        return itemRepository.findRecommendedItems(storeId, userId);
+    }
+
+    @Override
     public Item saveItem(Owner owner, User user, Store store, ItemModel newItem, List<MultipartFile> imageMultipartFiles) {
         Item item = new Item();
         Category category = categoryRepository.findById(newItem.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));

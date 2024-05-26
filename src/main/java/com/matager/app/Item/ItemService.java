@@ -17,6 +17,7 @@ public interface ItemService {
 
 
     Page<Item> getItemsFilteredAndSorted(Long storeId, String name, Long categoryId, Long subCategoryId, Boolean isVisible, String sort, int page, int size);
+    List<Item> getRecommendedProducts(Long storeId, Long userId);
 
     Item saveItem(Owner owner, User user, Store store, ItemModel newItem, List<MultipartFile> imageMultipartFile);
 
