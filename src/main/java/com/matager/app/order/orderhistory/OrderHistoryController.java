@@ -16,8 +16,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OrderHistoryController {
     private final OrderHistoryService orderHistoryService;
+
     @GetMapping
-    public ResponseEntity<ResponseModel> getOrderHistory(@PathVariable Long storeId,@RequestParam(name = "status") String deliveryStatus) {
+    public ResponseEntity<ResponseModel> getOrderHistory(@PathVariable Long storeId, @RequestParam(name = "status", required = false) String deliveryStatus) {
 
         return ResponseEntity.ok().body(
                 ResponseModel.builder()
@@ -25,7 +26,7 @@ public class OrderHistoryController {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("OrderHistory successfully retrieved")
-                        .data(Map.of("OrderHistory", orderHistoryService.getOrders(storeId,deliveryStatus)))
+                        .data(Map.of("OrderHistory", orderHistoryService.getOrders(storeId, deliveryStatus)))
                         .build());
     }
 

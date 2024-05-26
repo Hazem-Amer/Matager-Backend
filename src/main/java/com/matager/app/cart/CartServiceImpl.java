@@ -21,7 +21,9 @@ import com.matager.app.payment.PaymentType;
 import com.matager.app.store.Store;
 import com.matager.app.store.StoreRepository;
 import com.matager.app.user.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -105,6 +107,8 @@ public class CartServiceImpl implements CartService {
             cartItemRepository.delete(cartItem);
     }
 
+    @Modifying
+    @Transactional
     @Override
     public Order cartCheckOut(Long storeId) {
         User user = authenticationFacade.getAuthenticatedUser();
@@ -113,8 +117,9 @@ public class CartServiceImpl implements CartService {
         Owner owner = store.getOwner();
         Cart cart = cartRepository.findByStoreIdAndUserId(store.getId(), user.getId())
                 .orElseThrow(() -> new RuntimeException("User has no Cart"));
-        cartItemRepository.findAllByCartId(cart.getId())
-                .orElseThrow(() -> new RuntimeException("Cart has no Items"));
+        // What is this hapal !
+//        cartItemRepository.findAllByCartId(cart.getId())
+//                .orElseThrow(() -> new RuntimeException("Cart has no Items"));
         Order order = new Order();
         List<OrderItem> orderItems = new ArrayList<>();
         order.setOwner(owner);
@@ -143,6 +148,10 @@ public class CartServiceImpl implements CartService {
         order.setTotal(orderTotal);
         order.setItems(orderItems);
         order = orderRepository.saveAndFlush(order);
+
+        cartItemRepository.deleteAllByCartId(cart.getId());
+        cartRepository.deleteById(cart.getId());
+
 
         return order;
     }

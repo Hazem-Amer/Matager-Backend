@@ -61,6 +61,7 @@ public Page<OwnerOrderModel> getOrders(Long storeId, int page, int size) {
     List<OwnerOrderModel> ownerOrderModels = ordersPage.getContent().stream().map(order -> {
         OwnerOrderModel ownerOrderModel = new OwnerOrderModel();
         ownerOrderModel.setUserName(order.getUser().getName());
+        ownerOrderModel.setId(order.getId());
         ownerOrderModel.setPaymentType(order.getPaymentType());
         ownerOrderModel.setDeliveryStatus(order.getDeliveryStatus());
         ownerOrderModel.setIsPaid(order.getIsPaid());

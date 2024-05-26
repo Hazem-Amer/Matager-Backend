@@ -22,11 +22,12 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
         User user = authenticationFacade.getAuthenticatedUser();
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
-        List<Order> orders = orderRepository.findAllByStoreIdAndUserIdAndDeliveryStatus(store.getId(), user.getId(), deliveryStatus)
+        List<Order> orders = orderRepository.findAllByStoreIdAndUserId(store.getId(), user.getId())
                 .orElseThrow(() -> new RuntimeException("This user has no order history yet"));
 
         return orders.stream().map(order -> {
             OrderHistoryModel orderHistoryModel = new OrderHistoryModel();
+            orderHistoryModel.setId(order.getId());
             orderHistoryModel.setUserName(order.getUser().getName());
             orderHistoryModel.setPaymentType(order.getPaymentType());
             orderHistoryModel.setDeliveryStatus(order.getDeliveryStatus());

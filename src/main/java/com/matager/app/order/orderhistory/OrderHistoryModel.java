@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderHistoryModel {
+    private Long id;
     private String userName;
     private PaymentType paymentType;
     private DeliveryStatus deliveryStatus;

@@ -21,13 +21,18 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> , PagingAndSortingRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, PagingAndSortingRepository<Order, Long> {
 
     // ----------------------- Widget Queries ----------------------- //
     boolean isSunday = true; // TODO: implement logic to determine the first day of the week based on user country.
+
     Page<Order> findAllByStoreId(Long storeId, Pageable pageable);
+
     @Query(value = "SELECT * FROM `order` WHERE store_id = :storeId AND user_id = :userId AND delivery_status = :deliveryStatus", nativeQuery = true)
     Optional<List<Order>> findAllByStoreIdAndUserIdAndDeliveryStatus(@Param("storeId") Long storeId, @Param("userId") Long userId, @Param("deliveryStatus") String deliveryStatus);
+
+    @Query(value = "SELECT * FROM `order` WHERE store_id = :storeId AND user_id = :userId", nativeQuery = true)
+    Optional<List<Order>> findAllByStoreIdAndUserId(@Param("storeId") Long storeId, @Param("userId") Long userId);
 
 //    Optional<Order> findByStoreIdAndInvoiceNo(Long storeId, Long invoiceNo);
 

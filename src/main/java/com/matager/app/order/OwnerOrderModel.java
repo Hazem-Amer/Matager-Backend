@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OwnerOrderModel {
+    private Long id;
     private String userName;
     private PaymentType paymentType;
     private DeliveryStatus deliveryStatus;
