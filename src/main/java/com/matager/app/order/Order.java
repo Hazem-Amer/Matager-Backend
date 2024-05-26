@@ -24,7 +24,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "owner", "store"})
+@JsonIgnoreProperties({"owner", "store"})
 @Table(name = "`order`",
         indexes = {
                 @Index(name = "idx_order_owner_id", columnList = "owner_id"),

@@ -24,6 +24,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,6 +44,12 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final CustomerRepository customerRepository;
+
+    @Override
+    public Page<Order> getOrders(Long storeId, int page, int size) {
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found"));
+        return orderRepository.findAllByStoreId(store.getId(), PageRequest.of(page, size));
+    }
 
     @Override
     public Order updateOrder(Long orderId, OrderModel orderModel) {

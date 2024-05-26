@@ -25,9 +25,6 @@ public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificat
 
     Page<Item> findAllByStoreId(Long storeId, Pageable pageable);
 
-
-
-
     List<Item> findAllByOwnerId(Long ownerId, Pageable pageable);
 
     @Query(value = "SELECT * FROM item WHERE owner_id = :ownerId AND amount < minimum_stock_level", nativeQuery = true)

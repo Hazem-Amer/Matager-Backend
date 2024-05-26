@@ -25,7 +25,7 @@ public class OrderController {
     private final AuthenticationFacade authenticationFacade;
     private final OrderService orderService;
 
-//    @PostMapping("/sync")
+    //    @PostMapping("/sync")
 //    public ResponseEntity<ResponseModel> syncOrders(@RequestBody @Valid SyncOrdersModel ordersModel) {
 //        User user = authenticationFacade.getAuthenticatedUser();
 //
@@ -38,6 +38,20 @@ public class OrderController {
 //                        .data(Map.of("orders", orderService.syncOrders(user, ordersModel)))
 //                        .build());
 //    }
+    @GetMapping("/{storeId}")
+    public ResponseEntity<ResponseModel> getOrdersPaged(@PathVariable Long storeId,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size) {
+
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Orders retrieved successfully")
+                        .data(Map.of("orders", orderService.getOrders(storeId, page, size)))
+                        .build());
+    }
 
     @GetMapping("/info/{id}")
     public ResponseEntity<ResponseModel> getOrdersInfo(@PathVariable Long id) {
@@ -47,21 +61,22 @@ public class OrderController {
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .message("This Order has been updated successfully")
-                        .data(Map.of("OrdersInfo",orderService.getOrdersInfo(id)))
+                        .data(Map.of("OrdersInfo", orderService.getOrdersInfo(id)))
                         .build());
     }
-@PatchMapping("/{id}")
-public ResponseEntity<ResponseModel> updateOrder(@PathVariable Long id, @RequestBody OrderModel orderModel) {
-    return ResponseEntity.ok().body(
-            ResponseModel.builder()
-                    .timeStamp(LocalDateTime.now().toString())
-                    .status(HttpStatus.OK)
-                    .statusCode(HttpStatus.OK.value())
-                    .message("This Order has been updated successfully")
-                    .data(Map.of("Order", orderService.updateOrder(id,orderModel)))
-                    .build());
 
-}
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseModel> updateOrder(@PathVariable Long id, @RequestBody OrderModel orderModel) {
+        return ResponseEntity.ok().body(
+                ResponseModel.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("This Order has been updated successfully")
+                        .data(Map.of("Order", orderService.updateOrder(id, orderModel)))
+                        .build());
+
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseModel> deleteOrder(@PathVariable Long id) {
