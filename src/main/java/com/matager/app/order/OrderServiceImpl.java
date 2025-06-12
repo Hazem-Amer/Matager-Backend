@@ -42,17 +42,9 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final StoreRepository storeRepository;
-    private final ItemRepository itemRepository;
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final CustomerRepository customerRepository;
 
-//    @Override
-//    public Page<Order> getOrders(Long storeId, int page, int size) {
-//        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("store not found"));
-//        Page<Order> orders =orderRepository.findAllByStoreId(store.getId(), PageRequest.of(page, size));
-//
-//    }
+
 public Page<OwnerOrderModel> getOrders(Long storeId, int page, int size) {
     Store store = storeRepository.findById(storeId)
             .orElseThrow(() -> new RuntimeException("Store not found"));
@@ -93,8 +85,8 @@ public Page<OwnerOrderModel> getOrders(Long storeId, int page, int size) {
 
     @Override
     public Map<String, Long> getOrdersInfo(Long storeId) {
-        Map<String, Long> orderInfoCounts = new HashMap<>();
         storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found"));
+        Map<String, Long> orderInfoCounts = new HashMap<>();
         orderInfoCounts.put("CANCELLED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.CANCELLED.name()));
         orderInfoCounts.put("DELIVERED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.DELIVERED.name()));
         orderInfoCounts.put("SHIPPED", orderRepository.countByDeliveryStatus(storeId, DeliveryStatus.SHIPPED.name()));

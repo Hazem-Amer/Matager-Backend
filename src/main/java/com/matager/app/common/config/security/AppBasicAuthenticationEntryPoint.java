@@ -21,7 +21,7 @@ public class AppBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPo
 
     @Override
     public void afterPropertiesSet() {
-        setRealmName("Boss App");
+        setRealmName("Matager");
         super.afterPropertiesSet();
     }
 

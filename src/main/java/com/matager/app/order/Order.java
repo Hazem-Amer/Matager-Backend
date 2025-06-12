@@ -54,10 +54,6 @@ public class Order extends BaseEntity {
     private List<OrderItem> items;
 
 
-//    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Payment> payments;
-
     @Column(name = "payment_type")
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;

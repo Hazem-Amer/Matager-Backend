@@ -53,6 +53,14 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                                 auth
+                                        // Swagger UI paths
+                                        .requestMatchers("/v3/api-docs").permitAll()
+                                        .requestMatchers("/v3/api-docs/**").permitAll()
+                                        .requestMatchers("/swagger-ui/**").permitAll()
+                                        .requestMatchers("/swagger-ui.html").permitAll()
+                                        .requestMatchers("/swagger-resources/**").permitAll()
+                                        .requestMatchers("/webjars/**").permitAll()
+
                                         .requestMatchers("/v1/auth/login").permitAll()
                                         .requestMatchers("/v1/auth/sign_up").permitAll()
                                         .requestMatchers("/v1/store/{storeId}/auth/login").permitAll()
@@ -60,18 +68,16 @@ public class SecurityConfig {
                                         .requestMatchers("/v1/store/{storeId}/products").permitAll()
                                         .requestMatchers("/v1/store/{storeId}/products/{productId}").permitAll()
                                         .requestMatchers("/v1/store/{storeId}/category").permitAll()
-                                        // Cart is not allowed for non-users now
-//                                        .requestMatchers("/v1/store/{storeId}/cart").permitAll()
-                                        .anyRequest().authenticated() // TODO: Change this to authenticated() when done testing
-                ).oauth2ResourceServer().jwt()
-                .decoder(jwtDecoder())
-                .jwtAuthenticationConverter(new TokenAuthenticationConverter())
-                .and().and()
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .userDetailsService(appUserDetailsService)
-                .headers(headers -> headers.frameOptions().sameOrigin())
-                .build();
-    }
+                                        .anyRequest().authenticated()
+            ).oauth2ResourceServer().jwt()
+            .decoder(jwtDecoder())
+            .jwtAuthenticationConverter(new TokenAuthenticationConverter())
+            .and().and()
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .userDetailsService(appUserDetailsService)
+            .headers(headers -> headers.frameOptions().sameOrigin())
+            .build();
+}
 
     @Bean
     public JwtDecoder jwtDecoder() {
@@ -91,17 +97,5 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*")); // TODO: Change this to https://app.orderking.io for production
-        corsConfiguration.setAllowedMethods(List.of("*"));
-        corsConfiguration.setAllowedHeaders(List.of("*"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return source;
-    }
 
 }

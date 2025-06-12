@@ -21,4 +21,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findAllByOwnerId(Long ownerId);
 
+
 }

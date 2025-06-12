@@ -52,6 +52,29 @@ public class StoreServiceImpl implements StoreService {
         return storeRepository.save(store);
     }
 
+
+    @Override
+    public Store updateStore(String uuid, MultipartFile icon, NewStoreModel newStoreModel) {
+        User signedUser = authenticationFacade.getAuthenticatedUser();
+        Owner owner = signedUser.getOwner();
+
+        Store store = storeRepository.findByOwnerIdAndUuid(owner.getId(), uuid)
+                .orElseThrow(() -> new IllegalArgumentException("Store not found"));
+
+        // Update basic information
+        if (newStoreModel != null ) {
+            store.setName(newStoreModel.getName());
+            store.setBrand(newStoreModel.getBrand());
+            store.setAddress(newStoreModel.getAddress());
+        }
+        // Update icon only if a new one is provided
+        if (icon != null && !icon.isEmpty()) {
+            store.setIconUrl(fileUploadService.upload(FileType.STORE_ICON, icon));
+        }
+
+        return storeRepository.save(store);
+    }
+
     @Override
     public Store deleteStore(String uuid) {
         User signedUser = authenticationFacade.getAuthenticatedUser();
@@ -64,4 +87,6 @@ public class StoreServiceImpl implements StoreService {
 
         return store;
     }
+
+
 }

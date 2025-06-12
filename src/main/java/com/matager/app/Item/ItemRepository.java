@@ -27,7 +27,9 @@ public interface ItemRepository extends JpaRepository<Item, Long>, JpaSpecificat
             "RIGHT JOIN upc.item i " +
             "WHERE upc.store.id = :storeId AND upc.user.id = :userId " +
             "ORDER BY IFNULL(upc.clickCount,1) DESC")
+
     List<Item> findRecommendedItems(Long storeId, Long userId);
+
 
     Page<Item> findAllByStoreId(Long storeId, Pageable pageable);
 

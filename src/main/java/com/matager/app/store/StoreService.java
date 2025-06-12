@@ -14,6 +14,7 @@ public interface StoreService {
     Store getStore(String uuid);
 
     Store addStore(MultipartFile icon, NewStoreModel newStoreModel);
+    Store updateStore(String uuid,MultipartFile icon, NewStoreModel newStoreModel);
 
     Store deleteStore(String uuid);
 

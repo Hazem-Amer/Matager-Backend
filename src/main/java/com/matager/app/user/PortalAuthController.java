@@ -97,8 +97,14 @@ public class PortalAuthController {
         data.put("userDefaultStoreId", user.getDefaultStore() != null ? user.getDefaultStore().getId() : "No Default Store.");
         data.put("userStores",
                 storeService.getStores(owner.getId()).stream()
-                        .map(s ->
-                                Map.of("id", s.getId(), "name", s.getName(), "iconUrl", "")).toArray());
+                        .map(s -> {
+                            Map<String, Object> storeMap = new HashMap<>();
+                            storeMap.put("id", s.getId());
+                            storeMap.put("name", s.getName());
+                            storeMap.put("iconUrl", "");
+                            return storeMap;
+                        })
+                        .toArray());
 
         data.put("currencyCode", "EGP"); // TODO: change later
         data.put("currencySymbol", "$"); // TODO: change later

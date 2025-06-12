@@ -10,7 +10,6 @@ import com.matager.app.common.domain.BaseEntity;
 import com.matager.app.order.Order;
 import com.matager.app.order.delivery.DeliveryCustomer;
 import com.matager.app.owner.Owner;
-import com.matager.app.reservation.Reservation;
 import com.matager.app.setting.Setting;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -66,10 +65,6 @@ public class Store extends BaseEntity {
     @JsonIgnore
     private List<Order> orders;
 
-
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Reservation> reservations;
 
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

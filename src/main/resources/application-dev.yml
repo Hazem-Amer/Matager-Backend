@@ -4,9 +4,9 @@ spring:
     show-sql: true
 
   datasource:
-    url: jdbc:mysql://144.24.219.44:30022/matager?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/matager?useSSL=false&serverTimezone=UTC
     username: 'root'
-    password: 'boss-app-secret'
+    password: 'Spiderman@2'
 
 logging:
   level:
