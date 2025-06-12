@@ -1,0 +1,73 @@
+
+spring:
+
+  profiles:
+    active: dev
+    # prod, prod-sharding
+    # dev, dev-sharding
+
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: 'true'
+        ddl-auto: update
+    generate-ddl: true
+    show-sql: true
+
+  jackson:
+    #    serialization:
+    #      order-map-entries-by-keys: true
+    parser:
+      allow-single-quotes: true
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+
+  cache:
+    jcache:
+      config: 'classpath:ehcache.xml'
+
+  devtools:
+    restart:
+      enabled: false
+
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem
+
+
+server:
+  error:
+    include-message: always
+    path: /error
+  port: 8888
+#    whitelabel:
+#      enabled: false
+
+logging:
+  level:
+    #    root: debug
+    #    org.apache.tomcat: debug
+    #    org.apache.catalina: debug
+    at.orderking.bossApp: debug
+    org.hibernate:
+      #      type: trace
+      SQL: DEBUG
+
+
+
+config:
+  default-data-initialization: false # NOTE: set to true when first run or when you have updates
+
