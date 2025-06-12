@@ -63,5 +63,9 @@ You can view and test all endpoints visually using Postman 👇
 
 > Click the button to open my API collection directly in Postman.
 
+<br></br>
+## 🔗 Full Project Repository
 
+This backend is part of the complete **Matager Platform**, which includes the frontend and full system architecture.
 
+👉 **Explore the full project here:** [https://github.com/Matager](https://github.com/Matager)
