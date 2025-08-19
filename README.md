@@ -12,7 +12,6 @@ This repository showcases the backend API implementation I developed as part of 
 
 ### 🌟 Platform Highlights:
 - ⚡ **Easy Setup:** Create your online store within minutes with a simple and intuitive setup process.
-- 🎨 **Theme Customization:** Choose from a variety of predefined themes to personalize your storefront.
 - 🔧 **Comprehensive Control:** Manage products, payment methods, and delivery options with ease.
 - 📊 **Analytics Dashboard:** Gain valuable insights into customer behavior, popular items, and regional sales through detailed reports.
 
